@@ -4,6 +4,7 @@
 //=================================
 
 using FluentAssertions;
+using Force.DeepCloner;
 using Moq;
 using Sheenam.Api.Models.Foundations.Guests;
 using Xunit;
@@ -13,38 +14,13 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
     public partial class GuestServiceTests
     {
         [Fact]
-        public async Task ShouldAddGuestInWrongWayAsync()
-        {
-            // arrange
-            Guest randomGuest = new Guest
-            {
-                Id = Guid.NewGuid(),
-                FirstName = "James",
-                LastName = "Alex",
-                Address = "Lasek Brzozowy 1",
-                DateOfBirth = new DateTimeOffset(),
-                Email = "random@gmail.com",
-                Gender = GenderType.Male,
-                PhoneNumber = "517520208"
-            };
-
-            this.storageBrokerMock.Setup(broker =>
-                broker.InsertGuestAsync(randomGuest))
-                    .ReturnsAsync(randomGuest);
-            // act
-            Guest actual = await this.guestService.AddGuestAsync(randomGuest);
-            //assert
-            actual.Should().BeEquivalentTo(randomGuest);
-        }
-
-        [Fact]
         public async Task ShoulAddGuestAsync()
         {
             // given
             Guest randomGuest = CreateRandomGuest();
             Guest inputGuest = randomGuest;
             Guest returningGuest = inputGuest;
-            Guest expectedGuest = returningGuest;
+            Guest expectedGuest = returningGuest.DeepClone();
 
             this.storageBrokerMock.Setup(broker=>
             broker.InsertGuestAsync(inputGuest))
