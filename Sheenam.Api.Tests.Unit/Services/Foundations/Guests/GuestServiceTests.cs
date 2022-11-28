@@ -20,16 +20,16 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
 
         public GuestServiceTests()
         {
-            this.storageBrokerMock= new Mock<IStorageBroker>();
-            this.loggingBrokerMock= new Mock<ILoggingBroker>();
+            this.storageBrokerMock = new Mock<IStorageBroker>();
+            this.loggingBrokerMock = new Mock<ILoggingBroker>();
 
-            this.guestService =new GuestService(
-                storageBroker:this.storageBrokerMock.Object,
-                loggingBroker:this.loggingBrokerMock.Object);
+            this.guestService = new GuestService(
+                storageBroker: this.storageBrokerMock.Object,
+                loggingBroker: this.loggingBrokerMock.Object);
         }
 
         private static Guest CreateRandomGuest() =>
-            CreateGuestFiller(date:GetRandomDateTimeOffset()).Create();
+            CreateGuestFiller(date: GetRandomDateTimeOffset()).Create();
 
         private static DateTimeOffset GetRandomDateTimeOffset() =>
             new DateTimeRange(earliestDate: new DateTime()).GetValue();
