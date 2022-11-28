@@ -27,7 +27,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
                 this.guestService.AddGuestAsync(nullGuest);
 
             // then
-            await Assert.ThrowsAsync<GuestValidationException>( () =>
+            await Assert.ThrowsAsync<GuestValidationException>(() =>
                 addGuestTask.AsTask());
 
             this.loggingBrokerMock.Verify(broker =>

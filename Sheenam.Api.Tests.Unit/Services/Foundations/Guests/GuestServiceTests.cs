@@ -23,7 +23,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
         public GuestServiceTests()
         {
             this.storageBrokerMock = new Mock<IStorageBroker>();
-            this.loggingBrokerMock = new Mock<ILoggingBroker>();
+            this.loggingBrokerMock= new Mock<ILoggingBroker>();
 
             this.guestService = new GuestService(
                 storageBroker: this.storageBrokerMock.Object,
@@ -39,9 +39,9 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
         private Expression<Func<Xeption,bool>> SameExceptionAs(Xeption expectedException)
         {
             return actualException =>
-            actualException.Message == expectedException.Message
-            && actualException.InnerException.Message == expectedException.Message
-            && (actualException.InnerException as Xeption).DataEquals(expectedException.InnerException.Data);
+                actualException.Message == expectedException.Message
+                && actualException.InnerException.Message == expectedException.InnerException.Message
+                && (actualException.InnerException as Xeption).DataEquals(expectedException.InnerException.Data);
         }
 
         private static Filler<Guest> CreateGuestFiller(DateTimeOffset date)
