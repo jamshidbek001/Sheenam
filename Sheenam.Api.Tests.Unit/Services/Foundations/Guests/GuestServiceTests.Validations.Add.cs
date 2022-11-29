@@ -60,27 +60,27 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
 
             invalidGuestException.AddData(
                 key: nameof(Guest.Id),
-                values: "Id is required.");
+                values: "Id is required");
 
             invalidGuestException.AddData(
                 key: nameof(Guest.FirstName),
-                values: "Text is required.");
+                values: "Text is required");
 
             invalidGuestException.AddData(
                 key: nameof(Guest.LastName),
-                values: "Text is required.");
+                values: "Text is required");
 
             invalidGuestException.AddData(
                 key: nameof(Guest.DateOfBirth),
-                values: "Date is required.");
+                values: "Date is required");
 
             invalidGuestException.AddData(
                 key: nameof(Guest.Email),
-                values: "Text is required.");
+                values: "Text is required");
 
             invalidGuestException.AddData(
                 key: nameof(Guest.Address),
-                values: "Text is required.");
+                values: "Text is required");
 
             var expectedGuestValidationException =
                 new GuestValidationException(invalidGuestException);
