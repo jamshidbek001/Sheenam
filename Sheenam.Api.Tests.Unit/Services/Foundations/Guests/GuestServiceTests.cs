@@ -23,7 +23,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
         public GuestServiceTests()
         {
             this.storageBrokerMock = new Mock<IStorageBroker>();
-            this.loggingBrokerMock= new Mock<ILoggingBroker>();
+            this.loggingBrokerMock = new Mock<ILoggingBroker>();
 
             this.guestService = new GuestService(
                 storageBroker: this.storageBrokerMock.Object,
@@ -43,7 +43,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
         {
             int randomNumber = GetRandomNumber();
 
-            while (Enum.IsDefined(typeof(T),randomNumber) is true)
+            while (Enum.IsDefined(typeof(T), randomNumber) is true)
             {
                 randomNumber = GetRandomNumber();
             }
@@ -51,7 +51,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
             return (T)(Object)randomNumber;
         }
 
-        private Expression<Func<Xeption,bool>> SameExceptionAs(Xeption expectedException)
+        private Expression<Func<Xeption, bool>> SameExceptionAs(Xeption expectedException)
         {
             return actualException =>
                 actualException.Message == expectedException.Message
