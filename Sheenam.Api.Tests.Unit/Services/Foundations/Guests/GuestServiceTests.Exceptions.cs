@@ -61,7 +61,8 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
             var alreadyExistGuestException =
                 new AlreadyExistGuestException(duplicateKeyException);
 
-            var expectedGuestDependencyValidationException = new GuestDependencyValidationException(alreadyExistGuestException);
+            var expectedGuestDependencyValidationException =
+                    new GuestDependencyValidationException(alreadyExistGuestException);
 
             this.storageBrokerMock.Setup(broker =>
                 broker.InsertGuestAsync(someGuest))
@@ -72,7 +73,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
                 this.guestService.AddGuestAsync(someGuest);
 
             // then
-            await Assert.ThrowsAsync<GuestDependencyException>(() =>
+            await Assert.ThrowsAsync<GuestDependencyValidationException>(() =>
                 addGuestTask.AsTask());
 
             this.storageBrokerMock.Verify(broker =>
