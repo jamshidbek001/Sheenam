@@ -80,7 +80,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
                 broker.InsertGuestAsync(someGuest),
                     Times.Once);
 
-            this.loggingBrokerMock.Verify(broker => 
+            this.loggingBrokerMock.Verify(broker =>
                 broker.LogError(It.Is(SameExceptionAs(
                     expectedGuestDependencyValidationException))),
                     Times.Once);
@@ -109,7 +109,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
                 this.guestService.AddGuestAsync(someGuest);
 
             // then
-            await Assert.ThrowsAsync<GuestServieException> (() =>
+            await Assert.ThrowsAsync<GuestServieException>(() =>
                 addGuestTask.AsTask());
 
             this.storageBrokerMock.Verify(broker =>

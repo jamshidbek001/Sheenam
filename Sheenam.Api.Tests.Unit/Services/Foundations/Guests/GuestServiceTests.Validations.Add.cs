@@ -134,7 +134,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
                     expectedGuestValidationException))),
                     Times.Once);
 
-            this.storageBrokerMock.Verify(broker => 
+            this.storageBrokerMock.Verify(broker =>
                 broker.InsertGuestAsync(It.IsAny<Guest>()),
                 Times.Never);
 

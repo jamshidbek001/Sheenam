@@ -60,7 +60,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
         }
 
         private Expression<Func<Xeption, bool>> SameExceptionAs(Xeption expectedException) =>
-            actualException =>actualException.SameExceptionAs(expectedException);
+            actualException => actualException.SameExceptionAs(expectedException);
 
         private static Filler<Guest> CreateGuestFiller(DateTimeOffset date)
         {
