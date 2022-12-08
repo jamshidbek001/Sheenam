@@ -3,6 +3,7 @@
 // Free To Use To Find Comfort and Peace
 //=================================
 
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Sheenam.Api.Models.Foundations.Guests;
@@ -13,5 +14,6 @@ namespace Sheenam.Api.Brokers.Storages
     {
         ValueTask<Guest> InsertGuestAsync(Guest guest);
         IQueryable<Guest> SelectAllGuests();
+        ValueTask<Guest> SelectGuestByIdAsync(Guid id);
     }
 }
