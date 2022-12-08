@@ -54,6 +54,14 @@ namespace Sheenam.Api.Brokers.Storages
             return @object;
         }
 
+        private async ValueTask<T> DeleteAsync<T>(T @object)
+        {
+            var broker = new StorageBroker(this.configuration);
+            broker.Entry(@object).State = EntityState.Deleted;
+
+            return @object;
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             string connectionString =
