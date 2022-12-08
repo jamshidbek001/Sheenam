@@ -31,7 +31,7 @@ namespace Sheenam.Api.Brokers.Storages
             return @object;
         }
 
-        private  IQueryable<T> SelectAll<T>() where T : class
+        private IQueryable<T> SelectAll<T>() where T : class
         {
             var broker = new StorageBroker(this.configuration);
 
