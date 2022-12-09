@@ -22,7 +22,7 @@ namespace Sheenam.Api.Services.Foundations.Homes
             this.loggingBroker = loggingBroker;
         }
 
-        public ValueTask<Home> AddHomeAsync(Home home) =>
-            throw new System.NotImplementedException();
+        public async ValueTask<Home> AddHomeAsync(Home home) =>
+            await this.storageBroker.InsertHomeAsync(home);
     }
 }
