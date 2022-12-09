@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Sheenam.Api.Brokers.Loggings;
 using Sheenam.Api.Brokers.Storages;
 using Sheenam.Api.Models.Foundations.Homes;
+using Sheenam.Api.Models.Foundations.Homes.Exceptions;
 
 namespace Sheenam.Api.Services.Foundations.Homes
 {
@@ -22,7 +23,26 @@ namespace Sheenam.Api.Services.Foundations.Homes
             this.loggingBroker = loggingBroker;
         }
 
-        public async ValueTask<Home> AddHomeAsync(Home home) =>
-            await this.storageBroker.InsertHomeAsync(home);
+        public async ValueTask<Home> AddHomeAsync(Home home)
+        {
+            try
+            {
+                if (home is null)
+                {
+                    throw new NullHomeException();
+                }
+
+                return await this.storageBroker.InsertHomeAsync(home);
+            }
+            catch(NullHomeException nullHomeException)
+            {
+                var homeValidationException =
+                    new HomeValidationException(nullHomeException);
+
+                this.loggingBroker.LogError(homeValidationException);
+
+                throw homeValidationException;
+            }
+        }
     }
 }
