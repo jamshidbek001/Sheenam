@@ -3,6 +3,7 @@
 // Free To Use To Find Comfort and Peace
 //=================================
 
+using FluentAssertions;
 using Moq;
 using Sheenam.Api.Models.Foundations.Homes;
 using Sheenam.Api.Models.Foundations.Homes.Exceptions;
@@ -26,9 +27,11 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Homes
             ValueTask<Home> addHomeTask =
                 this.homeService.AddHomeAsync(nullHome);
 
+            HomeValidationException actualHomeValidationExeption =
+                await Assert.ThrowsAsync<HomeValidationException>(addHomeTask.AsTask);
+
             // then
-            await Assert.ThrowsAsync<HomeValidationException>(() =>
-                addHomeTask.AsTask());
+            actualHomeValidationExeption.Should().BeEquivalentTo(expectedHomeValidationException);
 
             this.loggingBrokerMock.Verify(broker =>
                 broker.LogError(It.Is(SameExceptionAs(expectedHomeValidationException))),
