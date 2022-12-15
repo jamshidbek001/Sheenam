@@ -71,11 +71,15 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Homes
                 key: nameof(Home.Address),
                 values: "Text is required");
 
+            invalidHomeException.AddData(
+                key: nameof(Home.AdditionalInfo),
+                values: "Text is required");
+
             var expectedHomeValidationException =
                 new HomeValidationException(invalidHomeException);
 
             // when
-            ValueTask<Home> addHometask =  this.homeService.AddHomeAsync(invalidHome);
+            ValueTask<Home> addHometask = this.homeService.AddHomeAsync(invalidHome);
 
             HomeValidationException actualHomeValidationException =
                 await Assert.ThrowsAsync<HomeValidationException>(addHometask.AsTask);
@@ -85,10 +89,10 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Homes
 
             this.loggingBrokerMock.Verify(broker =>
                 broker.LogError(It.Is(SameExceptionAs(
-                    expectedHomeValidationException))),Times.Once);
+                    expectedHomeValidationException))), Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.InsertHomeAsync(It.IsAny<Home>()),Times.Never);
+                broker.InsertHomeAsync(It.IsAny<Home>()), Times.Never);
 
             this.loggingBrokerMock.VerifyNoOtherCalls();
             this.storageBrokerMock.VerifyNoOtherCalls();

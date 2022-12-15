@@ -25,7 +25,7 @@ namespace Sheenam.Api.Services.Foundations.Homes
         public ValueTask<Home> AddHomeAsync(Home home) =>
         TryCatch(async () =>
         {
-            ValidateHomeNotNull(home);
+            ValidateHome(home);
 
             return await this.storageBroker.InsertHomeAsync(home);
         });
