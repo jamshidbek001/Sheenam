@@ -6,6 +6,7 @@
 using EFxceptions.Models.Exceptions;
 using FluentAssertions;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using Sheenam.Api.Models.Foundations.Homes;
 using Sheenam.Api.Models.Foundations.Homes.Exceptions;
@@ -79,7 +80,41 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Homes
                 broker.InsertHomeAsync(It.IsAny<Home>()), Times.Once);
 
             this.loggingBrokerMock.Verify(broker =>
-                broker.LogError(It.Is(SameExceptionAs(expectedHomeDependencyValidationException))),Times.Once);
+                broker.LogError(It.Is(SameExceptionAs(expectedHomeDependencyValidationException))), Times.Once);
+
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async Task ShouldThrowDependencyValidationExceptionOnAddIfDbConcurrencyErrorOccursAndLogItAsync()
+        {
+            // given
+            Home someHome = CreateRandomHome();
+            var dbUpdateConcurrencyException = new DbUpdateConcurrencyException();
+            var lockedHomeException = new LockedHomeException(dbUpdateConcurrencyException);
+
+            var expectedHomeDependencyValidationException =
+                new HomeDependencyValidationException(lockedHomeException);
+
+            this.storageBrokerMock.Setup(broker => broker.InsertHomeAsync(It.IsAny<Home>()))
+                .ThrowsAsync(dbUpdateConcurrencyException);
+
+            // when
+            ValueTask<Home> addHometask = this.homeService.AddHomeAsync(someHome);
+
+            HomeDependencyValidationException actualHomeDependencyValidationException =
+                await Assert.ThrowsAsync<HomeDependencyValidationException>(addHometask.AsTask);
+
+            // then
+            actualHomeDependencyValidationException.Should().BeEquivalentTo(expectedHomeDependencyValidationException);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.InsertHomeAsync(It.IsAny<Home>()), Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(
+                    expectedHomeDependencyValidationException))), Times.Once);
 
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
