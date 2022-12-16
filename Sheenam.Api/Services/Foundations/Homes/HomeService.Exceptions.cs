@@ -39,7 +39,7 @@ namespace Sheenam.Api.Services.Foundations.Homes
             catch(DuplicateKeyException duplicateKeyException)
             {
                 var failedHomeDependencyValidationException =
-                    new FailedHomeDependencyValidationException(duplicateKeyException);
+                    new AlreadyExistsHomeException(duplicateKeyException);
 
                 throw CreateAndLogDependencyValidationException(failedHomeDependencyValidationException);
             }

@@ -8,10 +8,10 @@ using Xeptions;
 
 namespace Sheenam.Api.Models.Foundations.Homes.Exceptions
 {
-    public class FailedHomeDependencyValidationException : Xeption
+    public class AlreadyExistsHomeException : Xeption
     {
-        public FailedHomeDependencyValidationException(Exception innerException)
-            : base(message: "Failed home dependency validation error occurred, fix the errors and try again.",
+        public AlreadyExistsHomeException(Exception innerException)
+            : base(message: "Home already exists.",
                   innerException)
         { }
     }

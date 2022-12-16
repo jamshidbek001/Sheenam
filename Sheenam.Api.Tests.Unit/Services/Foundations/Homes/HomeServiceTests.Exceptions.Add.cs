@@ -58,7 +58,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Homes
             var duplicateKeyException = new DuplicateKeyException(someMessage);
 
             var failedHomeDependencyValidationException =
-                new FailedHomeDependencyValidationException(duplicateKeyException);
+                new AlreadyExistsHomeException(duplicateKeyException);
 
             var expectedHomeDependencyValidationException =
                 new HomeDependencyValidationException(failedHomeDependencyValidationException);
