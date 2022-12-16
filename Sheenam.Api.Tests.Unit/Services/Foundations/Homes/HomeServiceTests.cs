@@ -35,6 +35,9 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Homes
         private static Home CreateRandomHome() =>
             CreateHomeFiller().Create();
 
+        private static string GetRandomString() =>
+            new MnemonicString().GetValue();
+
         private Expression<Func<Xeption, bool>> SameExceptionAs(Xeption expectedException) =>
             actualException => actualException.SameExceptionAs(expectedException);
 
