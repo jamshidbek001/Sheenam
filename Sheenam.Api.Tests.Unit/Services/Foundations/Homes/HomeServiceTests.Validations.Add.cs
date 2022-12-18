@@ -125,7 +125,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Homes
 
             this.loggingBrokerMock.Verify(broker =>
                 broker.LogError(It.Is(SameExceptionAs(
-                    expectedHomeValidationException())), Times.Once);
+                    expectedHomeValidationException))), Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
                 broker.InsertHomeAsync(It.IsAny<Home>()), Times.Never);
