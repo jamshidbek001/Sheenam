@@ -19,7 +19,8 @@ namespace Sheenam.Api.Services.Foundations.Homes
                 (Rule: IsInvalid(home.Id), Parameter: nameof(Home.Id)),
                 (Rule: IsInvalid(home.HostId), Parameter: nameof(Home.HostId)),
                 (Rule: IsInvalid(home.Address), Parameter: nameof(Home.Address)),
-                (Rule: IsInvalid(home.AdditionalInfo), Parameter: nameof(Home.AdditionalInfo)));
+                (Rule: IsInvalid(home.AdditionalInfo), Parameter: nameof(Home.AdditionalInfo)),
+                (Rule: IsInvalid(home.Type), Parameter: nameof(Home.Type)));
         }
 
         private static dynamic IsInvalid(Guid id) => new
@@ -32,6 +33,12 @@ namespace Sheenam.Api.Services.Foundations.Homes
         {
             Condition = string.IsNullOrWhiteSpace(text),
             Message = "Text is required"
+        };
+
+        private static dynamic IsInvalid(HouseType type) => new
+        {
+            Condition = Enum.IsDefined(type) is false,
+            Message = "Value is invalid"
         };
 
         private static void ValidateHomeNotNull(Home home)
