@@ -47,5 +47,8 @@ namespace Sheenam.Api.Services.Foundations.Guests
 
             return maybeGuest;
         });
+
+        public ValueTask<Guest> ModifyGuestAsync(Guest guest) =>
+            throw new NotImplementedException();
     }
 }
