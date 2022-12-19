@@ -30,6 +30,14 @@ namespace Sheenam.Api.Services.Foundations.Guests
         private void ValidateGuestId(Guid guestId) =>
             Validate((Rule: IsInvalid(guestId), Parameter: nameof(Guest.Id)));
 
+        private void ValidateStorageGuest(Guest maybeGuest,Guid guestId)
+        {
+            if(maybeGuest is null)
+            {
+                throw new NotFoundGuestException(guestId);
+            }
+        }
+
         private void ValidateGuestNotNull(Guest guest)
         {
             if (guest is null)
