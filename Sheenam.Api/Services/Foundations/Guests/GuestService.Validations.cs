@@ -4,6 +4,8 @@
 //=================================
 
 using System;
+using System.Data;
+using System.Reflection.Metadata;
 using Sheenam.Api.Models.Foundations.Guests;
 using Sheenam.Api.Models.Foundations.Guests.Exceptions;
 
@@ -24,6 +26,9 @@ namespace Sheenam.Api.Services.Foundations.Guests
                 (Rule: IsInvalid(guest.Address), Parameter: nameof(Guest.Address)),
                 (Rule: IsInvalid(guest.Gender), Parameter: nameof(Guest.Gender)));
         }
+
+        private void ValidateGuestId(Guid guestId) =>
+            Validate((Rule: IsInvalid(guestId), Parameter: nameof(Guest.Id)));
 
         private void ValidateGuestNotNull(Guest guest)
         {
