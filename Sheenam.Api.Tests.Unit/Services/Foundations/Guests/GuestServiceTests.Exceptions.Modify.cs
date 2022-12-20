@@ -25,8 +25,8 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
             var expectedGuestDependencyException =
                 new GuestDependencyException(failedGuestStorageException);
 
-            //this.storageBrokerMock.Setup(broker =>
-            //    broker.UpdateGuestAsync(someGuest)).ReturnsAsync(sqlException);
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectGuestByIdAsync(someGuest.Id)).ThrowsAsync(sqlException);
 
             // when
             ValueTask<Guest> modifyGuestTask =
@@ -38,15 +38,18 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
             // then
             actualGuestDependencyException.Should().BeEquivalentTo(expectedGuestDependencyException);
 
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectGuestByIdAsync(someGuest.Id), Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.UpdateGuestAsync(It.IsAny<Guest>()), Times.Never);
+            
             this.loggingBrokerMock.Verify(broker =>
                 broker.LogCritical(It.Is(SameExceptionAs(
                     expectedGuestDependencyException))), Times.Once);
 
-            this.storageBrokerMock.Verify(broker =>
-                broker.UpdateGuestAsync(It.IsAny<Guest>()), Times.Never);
-
-            this.loggingBrokerMock.VerifyNoOtherCalls();
             this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
         }
     }
 }
