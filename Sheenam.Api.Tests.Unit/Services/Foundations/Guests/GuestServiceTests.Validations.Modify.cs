@@ -38,7 +38,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
                 It.Is(SameExceptionAs(expectedGuestValidationException))), Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectGuestByIdAsync(It.IsAny<Guid>()), Times.Once);
+                broker.SelectGuestByIdAsync(It.IsAny<Guid>()), Times.Never);
 
             this.storageBrokerMock.Verify(broker =>
                 broker.UpdateGuestAsync(It.IsAny<Guest>()), Times.Never);
