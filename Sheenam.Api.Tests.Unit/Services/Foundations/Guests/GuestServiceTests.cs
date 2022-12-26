@@ -53,6 +53,9 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
         private static int GetRandomNumber() =>
             new IntRange(min: 2, max: 9).GetValue();
 
+        private static int GetRandomNegativeNumber() =>
+            -1 * new IntRange(min: 2, max: 10).GetValue();
+
         private static string GetRandomString() =>
             new MnemonicString().GetValue();
 
