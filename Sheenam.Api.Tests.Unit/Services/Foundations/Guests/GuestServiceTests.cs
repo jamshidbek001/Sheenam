@@ -32,7 +32,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
                 loggingBroker: this.loggingBrokerMock.Object);
         }
 
-        private static Guest CreateRandomGuest() =>
+        private static Guest CreateRandomGuest(DateTimeOffset date) =>
             CreateGuestFiller(date: GetRandomDateTimeOffset()).Create();
 
         private static IQueryable<Guest> CreateRandomGuests()
@@ -44,11 +44,17 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
         private static DateTimeOffset GetRandomDateTimeOffset() =>
             new DateTimeRange(earliestDate: new DateTime()).GetValue();
 
+        private static Guest CreateRandomGuest() =>
+            CreateGuestFiller(GetRandomDateTimeOffset()).Create();
+
         private static string GetRandomMessage() =>
             new MnemonicString(wordCount: GetRandomNumber()).GetValue();
 
         private static int GetRandomNumber() =>
             new IntRange(min: 2, max: 9).GetValue();
+
+        private static int GetRandomNegativeNumber() =>
+            -1 * new IntRange(min: 2, max: 10).GetValue();
 
         private static string GetRandomString() =>
             new MnemonicString().GetValue();

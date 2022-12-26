@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using EFxceptions.Models.Exceptions;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Sheenam.Api.Models.Foundations.Guests;
 using Sheenam.Api.Models.Foundations.Guests.Exceptions;
 using Xeptions;
@@ -49,9 +50,22 @@ namespace Sheenam.Api.Services.Foundations.Guests
 
                 throw CreateAndLogDependencyValidationException(alreadyExistGuestException);
             }
-            catch (Exception exception)
+            catch (DbUpdateConcurrencyException databaseUpdateConcurrencyException)
             {
-                var failedGuestServiceException = new FailedGuestServiceException(exception);
+                var lockedGuestException = new LockedGuestException(databaseUpdateConcurrencyException);
+
+                throw CreateAndLogDependencyValidationException(lockedGuestException);
+            }
+            catch (DbUpdateException databaseUpdateException)
+            {
+                var failedGuestStorageException =
+                    new FailedGuestStorageException(databaseUpdateException);
+
+                throw CtreateAndLogDependencyException(failedGuestStorageException);
+            }
+            catch (Exception serviceException)
+            {
+                var failedGuestServiceException = new FailedGuestServiceException(serviceException);
 
                 throw CreateAndLogServiceException(failedGuestServiceException);
             }
@@ -112,6 +126,14 @@ namespace Sheenam.Api.Services.Foundations.Guests
             this.loggingBroker.LogError(guestServiceException);
 
             return guestServiceException;
+        }
+
+        private GuestDependencyException CtreateAndLogDependencyException(Xeption excpetion)
+        {
+            var guestDependencyException = new GuestDependencyException(excpetion);
+            this.loggingBroker.LogError(guestDependencyException);
+
+            return guestDependencyException;
         }
     }
 }
