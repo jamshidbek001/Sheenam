@@ -110,11 +110,11 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
                 broker.SelectGuestByIdAsync(guestId)).ThrowsAsync(databaseUpdateConcurrencyException);
 
             // when
-            ValueTask<Guest> modifyGuestTAsk =
+            ValueTask<Guest> modifyGuestTask =
                 this.guestService.ModifyGuestAsync(someGuest);
 
             GuestDependencyValidationException actualGuestDependencyValidationException =
-                await Assert.ThrowsAsync<GuestDependencyValidationException>(modifyGuestTAsk.AsTask);
+                await Assert.ThrowsAsync<GuestDependencyValidationException>(modifyGuestTask.AsTask);
 
             // then
             actualGuestDependencyValidationException.Should().BeEquivalentTo(
