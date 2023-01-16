@@ -15,5 +15,6 @@ namespace Sheenam.Api.Brokers.Storages
         ValueTask<HomeRequest> InsertHomeRequestAsync(HomeRequest homeRequest);
         IQueryable<HomeRequest> SelectAllHomeRequests();
         ValueTask<HomeRequest> SelectHomeRequestByIdAsync(Guid id);
+        ValueTask<HomeRequest> UpdateHomeRequestAsync(HomeRequest homeRequest);
     }
 }
