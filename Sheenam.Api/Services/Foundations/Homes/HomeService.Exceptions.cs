@@ -38,7 +38,7 @@ namespace Sheenam.Api.Services.Foundations.Homes
 
                 throw CreateAndLogCriticalDependencyException(failedHomeStorageException);
             }
-            catch(DuplicateKeyException duplicateKeyException)
+            catch (DuplicateKeyException duplicateKeyException)
             {
                 var failedHomeDependencyValidationException =
                     new AlreadyExistsHomeException(duplicateKeyException);

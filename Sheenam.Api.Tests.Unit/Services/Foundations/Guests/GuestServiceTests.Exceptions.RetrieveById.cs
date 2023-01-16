@@ -72,7 +72,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
             actualGuestServieException.Should().BeEquivalentTo(expectedGuestServieException);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectGuestByIdAsync(It.IsAny<Guid>()),Times.Once);
+                broker.SelectGuestByIdAsync(It.IsAny<Guid>()), Times.Once);
 
             this.loggingBrokerMock.Verify(broker =>
                 broker.LogError(It.Is(SameExceptionAs(
