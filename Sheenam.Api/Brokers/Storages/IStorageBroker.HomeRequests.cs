@@ -4,6 +4,7 @@
 //=================================
 
 using Sheenam.Api.Models.Foundations.HomeRequests;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,5 +14,6 @@ namespace Sheenam.Api.Brokers.Storages
     {
         ValueTask<HomeRequest> InsertHomeRequestAsync(HomeRequest homeRequest);
         IQueryable<HomeRequest> SelectAllHomeRequests();
+        ValueTask<HomeRequest> SelectHomeRequestByIdAsync(Guid id);
     }
 }
