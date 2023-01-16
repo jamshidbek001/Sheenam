@@ -3,10 +3,11 @@
 // Free To Use To Find Comfort and Peace
 //=================================
 
-using Microsoft.EntityFrameworkCore;
-using Sheenam.Api.Models.Foundations.Hosts;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Sheenam.Api.Models.Foundations.Hosts;
 
 namespace Sheenam.Api.Brokers.Storages
 {
@@ -19,5 +20,8 @@ namespace Sheenam.Api.Brokers.Storages
 
         public IQueryable<Host> SelectAllHosts() =>
             SelectAll<Host>();
+
+        public async ValueTask<Host> SelectHostByIdAsync(Guid id) =>
+            await SelectAsync<Host>(id);
     }
 }
