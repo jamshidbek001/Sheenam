@@ -5,6 +5,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using Sheenam.Api.Models.Foundations.HomeRequests;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Sheenam.Api.Brokers.Storages
@@ -15,5 +16,8 @@ namespace Sheenam.Api.Brokers.Storages
 
         public async ValueTask<HomeRequest> InsertHomeRequestAsync(HomeRequest homeRequest) =>
             await InsertAsync(homeRequest);
+
+        public IQueryable<HomeRequest> SelectAllHomeRequests() =>
+            SelectAll<HomeRequest>();
     }
 }

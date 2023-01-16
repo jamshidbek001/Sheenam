@@ -4,6 +4,7 @@
 //=================================
 
 using Sheenam.Api.Models.Foundations.HomeRequests;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Sheenam.Api.Brokers.Storages
@@ -11,5 +12,6 @@ namespace Sheenam.Api.Brokers.Storages
     public partial interface IStorageBroker
     {
         ValueTask<HomeRequest> InsertHomeRequestAsync(HomeRequest homeRequest);
+        IQueryable<HomeRequest> SelectAllHomeRequests();
     }
 }
