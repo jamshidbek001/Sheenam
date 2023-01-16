@@ -5,6 +5,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using Sheenam.Api.Models.Foundations.Hosts;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Sheenam.Api.Brokers.Storages
@@ -15,5 +16,8 @@ namespace Sheenam.Api.Brokers.Storages
 
         public async ValueTask<Host> InsertHostAsync(Host host) =>
             await InsertAsync(host);
+
+        public IQueryable<Host> SelectAllHosts() =>
+            SelectAll<Host>();
     }
 }
