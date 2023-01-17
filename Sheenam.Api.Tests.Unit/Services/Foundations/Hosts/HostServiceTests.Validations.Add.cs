@@ -100,7 +100,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Hosts
         }
 
         [Fact]
-        public async Task ShouldThrowValidationExcxeptionOnAddIfGenderIsInvalidAndLogItAsync()
+        public async Task ShouldThrowValidationExceptionOnAddIfGenderIsInvalidAndLogItAsync()
         {
             // given
             Host randomHost = CreateRandomHost();
