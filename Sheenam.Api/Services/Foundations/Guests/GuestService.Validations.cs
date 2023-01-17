@@ -4,8 +4,6 @@
 //=================================
 
 using System;
-using System.Data;
-using System.Reflection.Metadata;
 using Sheenam.Api.Models.Foundations.Guests;
 using Sheenam.Api.Models.Foundations.Guests.Exceptions;
 
@@ -43,9 +41,9 @@ namespace Sheenam.Api.Services.Foundations.Guests
         private void ValidateGuestId(Guid guestId) =>
             Validate((Rule: IsInvalid(guestId), Parameter: nameof(Guest.Id)));
 
-        private void ValidateStorageGuest(Guest maybeGuest,Guid guestId)
+        private void ValidateStorageGuest(Guest maybeGuest, Guid guestId)
         {
-            if(maybeGuest is null)
+            if (maybeGuest is null)
             {
                 throw new NotFoundGuestException(guestId);
             }
