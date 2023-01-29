@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Sheenam.Api.Brokers.DateTimes;
 using Sheenam.Api.Brokers.Loggings;
 using Sheenam.Api.Brokers.Storages;
 using Sheenam.Api.Services.Foundations.Guests;
@@ -70,6 +71,7 @@ namespace Sheenam.Api
         private static void AddBrokers(IServiceCollection services)
         {
             services.AddTransient<IStorageBroker, StorageBroker>();
+            services.AddTransient<IDateTimeBroker, DateTimeBroker>();
             services.AddTransient<ILoggingBroker, LoggingBroker>();
         }
 
