@@ -25,7 +25,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Hosts
             actualHost.Should().BeEquivalentTo(expectedHosts);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectAllGuests(), Times.Once);
+                broker.SelectAllHosts(), Times.Once);
 
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
