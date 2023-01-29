@@ -52,7 +52,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Hosts
             (SqlException)FormatterServices.GetUninitializedObject(typeof(SqlException));
 
         private static string GetRandomString() =>
-            new MnemonicString().GetValue();
+            new MnemonicString(wordCount:GetRandomNumber()).GetValue();
 
         private static T GetInvalidEnum<T>()
         {
