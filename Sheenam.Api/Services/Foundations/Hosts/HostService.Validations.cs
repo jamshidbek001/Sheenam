@@ -4,6 +4,7 @@
 //=================================
 
 using System;
+using System.Data;
 using Sheenam.Api.Models.Foundations.Hosts;
 using Sheenam.Api.Models.Foundations.Hosts.Exceptions;
 
@@ -23,6 +24,9 @@ namespace Sheenam.Api.Services.Foundations.Hosts
                 (Rule: IsInvalid(host.Email), Parameter: nameof(Host.Email)),
                 (Rule: IsInvalid(host.Gender), Parameter: nameof(Host.Gender)));
         }
+
+        private void ValidateHostId(Guid hostId) =>
+            Validate((Rule: IsInvalid(hostId), Parameter: nameof(Host.Id)));
 
         private void ValidateHostNotNull(Host host)
         {

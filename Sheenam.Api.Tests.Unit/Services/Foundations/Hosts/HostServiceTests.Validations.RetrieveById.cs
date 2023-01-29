@@ -22,7 +22,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Hosts
 
             invalidHostException.AddData(
                 key: nameof(Host.Id),
-                values: "Id is requires");
+                values: "Id is required");
 
             var expectedHostValidationException =
                 new HostValidationException(invalidHostException);
