@@ -17,7 +17,8 @@ namespace Sheenam.Api.Services.Foundations.Hosts
         private readonly ILoggingBroker loggingBroker;
 
         public HostService(IStorageBroker storageBroker,
-            ILoggingBroker loggingBroker)
+            ILoggingBroker loggingBroker,
+            Brokers.DateTimes.IDateTimeBroker dateTimeBroker)
         {
             this.storageBroker = storageBroker;
             this.loggingBroker = loggingBroker;
