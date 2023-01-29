@@ -7,6 +7,7 @@ using System.Linq.Expressions;
 using System.Runtime.Serialization;
 using Microsoft.Data.SqlClient;
 using Moq;
+using Sheenam.Api.Brokers.DateTimes;
 using Sheenam.Api.Brokers.Loggings;
 using Sheenam.Api.Brokers.Storages;
 using Sheenam.Api.Models.Foundations.Hosts;
@@ -19,21 +20,30 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Hosts
     public partial class HostServiceTests
     {
         private readonly Mock<IStorageBroker> storageBrokerMock;
+        private readonly Mock<IDateTimeBroker> dateTimeBrokerMock;
         private readonly Mock<ILoggingBroker> loggingBrokerMock;
         private readonly IHostService hostService;
 
         public HostServiceTests()
         {
             this.storageBrokerMock = new Mock<IStorageBroker>();
+            this.dateTimeBrokerMock = new Mock<IDateTimeBroker>();
             this.loggingBrokerMock = new Mock<ILoggingBroker>();
 
             this.hostService = new HostService(
-                storageBroker: storageBrokerMock.Object,
-                loggingBroker: loggingBrokerMock.Object);
+                storageBroker: this.storageBrokerMock.Object,
+                dateTimeBroker: this.dateTimeBrokerMock.Object,
+                loggingBroker: this.loggingBrokerMock.Object);
         }
 
         private static Host CreateRandomHost() =>
             CreateHostFiller(date: GetRandomDateTimeOffset()).Create();
+
+        private static IQueryable<Host> CreateRandomHosts()
+        {
+            return CreateHostFiller(date: GetRandomDateTimeOffset())
+                .Create(count: GetRandomNumber()).AsQueryable();
+        }
 
         private static DateTimeOffset GetRandomDateTimeOffset() =>
             new DateTimeRange(earliestDate: new DateTime()).GetValue();
@@ -42,7 +52,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Hosts
             (SqlException)FormatterServices.GetUninitializedObject(typeof(SqlException));
 
         private static string GetRandomString() =>
-            new MnemonicString().GetValue();
+            new MnemonicString(wordCount: GetRandomNumber()).GetValue();
 
         private static T GetInvalidEnum<T>()
         {

@@ -3,7 +3,9 @@
 // Free To Use To Find Comfort and Peace
 //=================================
 
+using System.Linq;
 using System.Threading.Tasks;
+using Sheenam.Api.Brokers.DateTimes;
 using Sheenam.Api.Brokers.Loggings;
 using Sheenam.Api.Brokers.Storages;
 using Sheenam.Api.Models.Foundations.Hosts;
@@ -16,7 +18,8 @@ namespace Sheenam.Api.Services.Foundations.Hosts
         private readonly ILoggingBroker loggingBroker;
 
         public HostService(IStorageBroker storageBroker,
-            ILoggingBroker loggingBroker)
+            ILoggingBroker loggingBroker,
+            IDateTimeBroker dateTimeBroker)
         {
             this.storageBroker = storageBroker;
             this.loggingBroker = loggingBroker;
@@ -28,6 +31,12 @@ namespace Sheenam.Api.Services.Foundations.Hosts
             ValidateHostOnAdd(host);
 
             return await this.storageBroker.InsertHostAsync(host);
+        });
+
+        public IQueryable<Host> RetrieveAllHosts() =>
+        TryCatch(() =>
+        {
+            return this.storageBroker.SelectAllHosts();
         });
     }
 }
