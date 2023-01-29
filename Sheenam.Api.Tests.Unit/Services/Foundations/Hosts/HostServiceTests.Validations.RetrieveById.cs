@@ -52,10 +52,12 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Hosts
         public async Task ShouldThrowNotFoundExceptionOnRetrieveByIdIfHostIsNotFoundAndLogItAsync()
         {
             // given
-            Guid someHostId = Guid.Empty;
+            Guid someHostId = Guid.NewGuid();
             Host noHost = null;
             var notFoundHostException = new NotFoundHostException(someHostId);
-            var expectedHostValidationException = new HostValidationException(notFoundHostException);
+
+            var expectedHostValidationException =
+                new HostValidationException(notFoundHostException);
 
             this.storageBrokerMock.Setup(broker =>
                 broker.SelectHostByIdAsync(It.IsAny<Guid>())).ReturnsAsync(noHost);

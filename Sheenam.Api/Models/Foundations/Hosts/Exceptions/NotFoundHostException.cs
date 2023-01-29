@@ -11,7 +11,7 @@ namespace Sheenam.Api.Models.Foundations.Hosts.Exceptions
     public class NotFoundHostException : Xeption
     {
         public NotFoundHostException(Guid hostId)
-            : base(message: $"Could not find with id {hostId}")
+            : base(message: $"Could not find with id:{hostId}")
         { }
     }
 }

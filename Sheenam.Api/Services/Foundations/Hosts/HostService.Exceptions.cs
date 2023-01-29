@@ -33,6 +33,10 @@ namespace Sheenam.Api.Services.Foundations.Hosts
             {
                 throw CreateAndLogValidationException(invalidHostException);
             }
+            catch (NotFoundHostException notFoundHostException)
+            {
+                throw CreateAndLogValidationException(notFoundHostException);
+            }
             catch (SqlException sqlException)
             {
                 var failedHostStorageException = new FailedHostStorageException(sqlException);
