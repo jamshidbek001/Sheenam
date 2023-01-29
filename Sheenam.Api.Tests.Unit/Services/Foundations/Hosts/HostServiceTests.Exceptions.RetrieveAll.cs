@@ -43,7 +43,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Hosts
         }
 
         [Fact]
-        public async void ShouldThrowServiceExceptionOnRetrieveAllWhenServiceErrorOccurredAndLogIt()
+        public void ShouldThrowServiceExceptionOnRetrieveAllWhenServiceErrorOccurredAndLogIt()
         {
             // given
             string exceptionMessage = GetRandomString();
@@ -65,7 +65,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Hosts
 
             this.storageBrokerMock.Verify(broker => broker.SelectAllHosts(), Times.Once);
 
-            this.loggingBrokerMock.Verify(broker => broker.LogCritical(It.Is(SameExceptionAs(
+            this.loggingBrokerMock.Verify(broker => broker.LogError(It.Is(SameExceptionAs(
                 expectedHostServiceException))), Times.Once);
 
             this.storageBrokerMock.VerifyNoOtherCalls();

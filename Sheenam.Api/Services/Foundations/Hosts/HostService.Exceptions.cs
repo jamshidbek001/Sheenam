@@ -65,6 +65,12 @@ namespace Sheenam.Api.Services.Foundations.Hosts
 
                 throw CreateAndLogCriticalDependencyException(failedServiceException);
             }
+            catch (Exception serviceException)
+            {
+                var failedServiceHostException = new FailedHostServiceException(serviceException);
+
+                throw CreateAndLogServiceException(failedServiceHostException);
+            }
         }
 
         private HostValidationException CreateAndLogValidationException(Xeption exception)
