@@ -1,4 +1,9 @@
-﻿using FluentAssertions;
+﻿//=================================
+// Copyright (c) Coalition of Good-Hearted Engineers
+// Free To Use To Find Comfort and Peace
+//=================================
+
+using FluentAssertions;
 using Microsoft.Data.SqlClient;
 using Moq;
 using Sheenam.Api.Models.Foundations.Hosts.Exceptions;

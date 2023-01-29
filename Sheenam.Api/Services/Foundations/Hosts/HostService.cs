@@ -5,6 +5,7 @@
 
 using System.Linq;
 using System.Threading.Tasks;
+using Sheenam.Api.Brokers.DateTimes;
 using Sheenam.Api.Brokers.Loggings;
 using Sheenam.Api.Brokers.Storages;
 using Sheenam.Api.Models.Foundations.Hosts;
@@ -18,7 +19,7 @@ namespace Sheenam.Api.Services.Foundations.Hosts
 
         public HostService(IStorageBroker storageBroker,
             ILoggingBroker loggingBroker,
-            Brokers.DateTimes.IDateTimeBroker dateTimeBroker)
+            IDateTimeBroker dateTimeBroker)
         {
             this.storageBroker = storageBroker;
             this.loggingBroker = loggingBroker;
