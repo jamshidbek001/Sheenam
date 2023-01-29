@@ -40,9 +40,7 @@ namespace Sheenam.Api.Services.Foundations.Hosts
             return this.storageBroker.SelectAllHosts();
         });
 
-        public ValueTask<Host> RetrieveHostByIdAsync(Guid hostId)
-        {
-            throw new NotImplementedException();
-        }
+        public ValueTask<Host> RetrieveHostByIdAsync(Guid hostId) =>
+            this.storageBroker.SelectHostByIdAsync(hostId);
     }
 }
