@@ -24,6 +24,17 @@ namespace Sheenam.Api.Services.Foundations.Hosts
                 (Rule: IsInvalid(host.Gender), Parameter: nameof(Host.Gender)));
         }
 
+        private void ValidateHostId(Guid hostId) =>
+            Validate((Rule: IsInvalid(hostId), Parameter: nameof(Host.Id)));
+
+        private void ValidateStorageHost(Host maybeHost, Guid hostId)
+        {
+            if (maybeHost is null)
+            {
+                throw new NotFoundHostException(hostId);
+            }
+        }
+
         private void ValidateHostNotNull(Host host)
         {
             if (host is null)
