@@ -56,7 +56,7 @@ namespace Sheenam.Api.Services.Foundations.Hosts
         public ValueTask<Host> ModifyHostAsync(Host host) =>
         TryCatch(async () =>
         {
-            ValidateHostNotNull(host);
+            ValidateHostOnModify(host);
             var maybeHost = await this.storageBroker.SelectHostByIdAsync(host.Id);
 
             return await this.storageBroker.UpdateHostAsync(host);
