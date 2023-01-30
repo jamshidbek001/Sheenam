@@ -54,7 +54,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Hosts
         }
 
         [Fact]
-        public async Task ShouldThrowValidationExceptionOnModifyIHostDoesNotExistAndLogItAsync()
+        public async Task ShouldThrowValidationExceptionOnModifyIfHostDoesNotExistAndLogItAsync()
         {
             // given
             Host randomHost = CreateRandomHost();
