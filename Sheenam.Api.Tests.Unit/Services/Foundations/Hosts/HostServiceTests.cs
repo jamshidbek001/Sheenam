@@ -39,6 +39,9 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Hosts
         private static Host CreateRandomHost() =>
             CreateHostFiller(date: GetRandomDateTimeOffset()).Create();
 
+        private static Host CreateRandomHost(DateTimeOffset date) =>
+            CreateHostFiller(date).Create();
+
         private static IQueryable<Host> CreateRandomHosts()
         {
             return CreateHostFiller(date: GetRandomDateTimeOffset())
@@ -68,6 +71,9 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Hosts
 
         private static int GetRandomNumber() =>
             new IntRange(min: 2, max: 9).GetValue();
+
+        private static int GetRandomNegativeNumber() =>
+            -1 * new IntRange(min: 2, max: 10).GetValue();
 
         private Expression<Func<Xeption, bool>> SameExceptionAs(Xeption expectedException) =>
             actualException => actualException.SameExceptionAs(expectedException);
