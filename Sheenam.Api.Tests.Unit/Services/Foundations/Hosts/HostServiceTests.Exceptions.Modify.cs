@@ -128,5 +128,45 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Hosts
             this.loggingBrokerMock.VerifyNoOtherCalls();
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
         }
+
+        [Fact]
+        public async Task ShouldThrowDependencyExceptionOnModifyIfDatabaseUpdateConcurrencyErrorOccursAndLogItAsync()
+        {
+            // given
+            DateTimeOffset randomDateTime = GetRandomDateTimeOffset();
+            Host randomHost = CreateRandomHost(randomDateTime);
+            Host someHost = randomHost;
+            Guid hostId = someHost.Id;
+            var databaseUpdateConcurrencyException = new DbUpdateConcurrencyException();
+            var lockedHostException = new LockedHostException(databaseUpdateConcurrencyException);
+
+            var expectedHostDependencyValidationException =
+                new HostDependencyValidationException(lockedHostException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectHostByIdAsync(hostId)).ThrowsAsync(databaseUpdateConcurrencyException);
+
+            // when
+            ValueTask<Host> modifyHostTask =
+                this.hostService.ModifyHostAsync(someHost);
+
+            HostDependencyValidationException actualHostDependencyValidationException =
+                await Assert.ThrowsAsync<HostDependencyValidationException>(modifyHostTask.AsTask);
+
+            // then
+            actualHostDependencyValidationException.Should().BeEquivalentTo(
+                expectedHostDependencyValidationException);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectHostByIdAsync(hostId), Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(
+                    expectedHostDependencyValidationException))), Times.Once);
+
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+        }
     }
 }
