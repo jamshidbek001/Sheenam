@@ -37,7 +37,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Hosts
                 expectedHostValidationException))), Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectHostByIdAsync(It.IsAny<Guid>()), Times.Once);
+                broker.SelectHostByIdAsync(It.IsAny<Guid>()), Times.Never);
 
             this.loggingBrokerMock.VerifyNoOtherCalls();
             this.storageBrokerMock.VerifyNoOtherCalls();
