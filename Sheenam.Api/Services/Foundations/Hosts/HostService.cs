@@ -58,6 +58,7 @@ namespace Sheenam.Api.Services.Foundations.Hosts
         {
             ValidateHostOnModify(host);
             var maybeHost = await this.storageBroker.SelectHostByIdAsync(host.Id);
+            ValidateStorageHost(maybeHost, host.Id);
 
             return await this.storageBroker.UpdateHostAsync(host);
         });
