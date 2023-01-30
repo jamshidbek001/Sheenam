@@ -50,6 +50,12 @@ namespace Sheenam.Api.Services.Foundations.Hosts
 
                 throw CreateAndLogDependencyValidationException(alreadyExistHostException);
             }
+            catch (DbUpdateConcurrencyException databaseUpdateConcurrencyException)
+            {
+                var lockedHostException = new LockedHostException(databaseUpdateConcurrencyException);
+
+                throw CreateAndLogDependencyValidationException(lockedHostException);
+            }
             catch (DbUpdateException databaseUpdateException)
             {
                 var failedHostStorageException = new FailedHostStorageException(databaseUpdateException);
