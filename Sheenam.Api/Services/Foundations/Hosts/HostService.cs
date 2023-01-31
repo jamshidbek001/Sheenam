@@ -63,11 +63,13 @@ namespace Sheenam.Api.Services.Foundations.Hosts
             return await this.storageBroker.UpdateHostAsync(host);
         });
 
-        public async ValueTask<Host> RemoveHostByIdAsync(Guid hostId)
+        public ValueTask<Host> RemoveHostByIdAsync(Guid hostId) =>
+        TryCatch(async () =>
         {
+            ValidateHostId(hostId);
             Host maybeHost = await this.storageBroker.SelectHostByIdAsync(hostId);
 
             return await this.storageBroker.DeleteHostAsync(maybeHost);
-        }
+        });
     }
 }

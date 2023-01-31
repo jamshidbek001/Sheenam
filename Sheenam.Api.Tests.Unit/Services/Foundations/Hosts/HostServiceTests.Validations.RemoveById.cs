@@ -17,7 +17,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Hosts
         public async Task ShouldThrowValidationExceptionOnRemoveIfIdIsInvalidAndLogItAsync()
         {
             // given
-            Guid invalidHostId = Guid.NewGuid();
+            Guid invalidHostId = Guid.Empty;
             var invalidHostException = new InvalidHostException();
 
             invalidHostException.AddData(
