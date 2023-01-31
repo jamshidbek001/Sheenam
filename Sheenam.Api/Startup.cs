@@ -14,6 +14,7 @@ using Sheenam.Api.Brokers.Loggings;
 using Sheenam.Api.Brokers.Storages;
 using Sheenam.Api.Services.Foundations.Guests;
 using Sheenam.Api.Services.Foundations.Homes;
+using Sheenam.Api.Services.Foundations.Hosts;
 
 namespace Sheenam.Api
 {
@@ -39,6 +40,8 @@ namespace Sheenam.Api
 
             services.AddSwaggerGen(options =>
             {
+                options.CustomSchemaIds(type => type.ToString());
+
                 options.SwaggerDoc(
                     name: "v1",
                     info: apiInfo);
@@ -79,6 +82,7 @@ namespace Sheenam.Api
         {
             services.AddTransient<IGuestService, GuestService>();
             services.AddTransient<IHomeService, HomeService>();
+            services.AddTransient<IHostService, HostService>();
         }
     }
 }
