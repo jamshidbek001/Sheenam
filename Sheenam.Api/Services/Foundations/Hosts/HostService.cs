@@ -62,5 +62,8 @@ namespace Sheenam.Api.Services.Foundations.Hosts
 
             return await this.storageBroker.UpdateHostAsync(host);
         });
+
+        public ValueTask<Host> RemoveHostByIdAsync(Guid hostId) =>
+            throw new NotImplementedException();
     }
 }
