@@ -49,7 +49,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Hosts
         }
 
         [Fact]
-        public async Task ShouldThrowNotFoungExceptionOnRemoveIfHostIsNotFoundAndLogItAsync()
+        public async Task ShouldThrowNotFoundExceptionOnRemoveIfHostIsNotFoundAndLogItAsync()
         {
             // given
             Guid randomHostId = Guid.NewGuid();
