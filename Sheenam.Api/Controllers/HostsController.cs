@@ -3,6 +3,7 @@
 // Free To Use To Find Comfort and Peace
 //=================================
 
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RESTFulSense.Controllers;
@@ -40,6 +41,25 @@ namespace Sheenam.Api.Controllers
             catch (HostDependencyValidationException hostDependencyValidationException)
             {
                 return BadRequest(hostDependencyValidationException.InnerException);
+            }
+            catch (HostDependencyException hostDependencyException)
+            {
+                return InternalServerError(hostDependencyException.InnerException);
+            }
+            catch (HostServiceException hostServiceException)
+            {
+                return InternalServerError(hostServiceException.InnerException);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult<IQueryable<Host>> GetAllHosts()
+        {
+            try
+            {
+                IQueryable<Host> allHosts = this.hostService.RetrieveAllHosts();
+
+                return Ok(allHosts);
             }
             catch (HostDependencyException hostDependencyException)
             {
