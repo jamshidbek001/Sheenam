@@ -145,7 +145,7 @@ namespace Sheenam.Api.Controllers
                 Guest deletedGuest =
                     await this.guestService.RemoveGuestByIdAsync(guestId);
 
-                return Ok("Guest is deleted");
+                return Ok(deletedGuest);
             }
             catch (GuestValidationException guestValidationException)
                 when (guestValidationException.InnerException is NotFoundGuestException)
