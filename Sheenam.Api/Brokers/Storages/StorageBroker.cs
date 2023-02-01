@@ -58,6 +58,7 @@ namespace Sheenam.Api.Brokers.Storages
         {
             var broker = new StorageBroker(this.configuration);
             broker.Entry(@object).State = EntityState.Deleted;
+            await broker.SaveChangesAsync();
 
             return @object;
         }
