@@ -34,6 +34,10 @@ namespace Sheenam.Api.Services.Foundations.Homes
             {
                 throw CreateAndLogValidationException(invalidHomeException);
             }
+            catch (NotFoundHomeException notFoundHomeException)
+            {
+                throw CreateAndLogValidationException(notFoundHomeException);
+            }
             catch (SqlException sqlException)
             {
                 var failedHomeStorageException = new FailedHomeStorageException(sqlException);
