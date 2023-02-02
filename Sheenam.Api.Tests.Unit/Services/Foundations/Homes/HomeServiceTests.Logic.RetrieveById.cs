@@ -39,7 +39,6 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Homes
 
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
-
         }
     }
 }
