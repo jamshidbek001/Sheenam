@@ -4,6 +4,7 @@
 //=================================
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using EFxceptions.Models.Exceptions;
 using Microsoft.Data.SqlClient;
@@ -17,6 +18,7 @@ namespace Sheenam.Api.Services.Foundations.Homes
     public partial class HomeService
     {
         private delegate ValueTask<Home> ReturningHomeFunction();
+        private delegate IQueryable<Home> ReturningHomeFunctions();
 
         private async ValueTask<Home> TryCatch(ReturningHomeFunction returningHomeFunction)
         {
@@ -59,6 +61,26 @@ namespace Sheenam.Api.Services.Foundations.Homes
             }
         }
 
+        private IQueryable<Home> TryCatch(ReturningHomeFunctions returningHomeFunctions)
+        {
+            try
+            {
+                return returningHomeFunctions();
+            }
+            catch (SqlException sqlException)
+            {
+                var failedStorageHomeException = new FailedHomeStorageException(sqlException);
+
+                throw CreateAndLogCriticalDependencyException(failedStorageHomeException);
+            }
+            catch (Exception exception)
+            {
+                var faildHomeServiceException = new FailedHomeServiceException(exception);
+
+                throw CreateAndLogServiceException(faildHomeServiceException);
+            }
+        }
+
         private HomeValidationException CreateAndLogValidationException(Xeption exception)
         {
             var homeValidationException = new HomeValidationException(exception);
@@ -83,7 +105,15 @@ namespace Sheenam.Api.Services.Foundations.Homes
             return homeDependencyValidationException;
         }
 
-        private Exception CreateAndLogServiceException(Xeption exception)
+        private HomeDependencyException CreateAndLogDependencyException(Xeption exception)
+        {
+            var homeDependencyException = new HomeDependencyException(exception);
+            this.loggingBroker.LogError(homeDependencyException);
+
+            return homeDependencyException;
+        }
+
+        private HomeServiceException CreateAndLogServiceException(Exception exception)
         {
             var homeServiceException = new HomeServiceException(exception);
             this.loggingBroker.LogError(homeServiceException);

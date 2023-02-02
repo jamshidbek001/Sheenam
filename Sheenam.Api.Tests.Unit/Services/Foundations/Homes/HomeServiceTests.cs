@@ -33,7 +33,16 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Homes
         }
 
         private static Home CreateRandomHome() =>
-            CreateHomeFiller().Create();
+            CreateHomeFiller(date: GetRandomDateTimeOffset()).Create();
+
+        private static IQueryable<Home> CreateRandomHomes()
+        {
+            return CreateHomeFiller(date: GetRandomDateTimeOffset())
+                .Create(count: GetRandomNumber()).AsQueryable();
+        }
+
+        private static DateTimeOffset GetRandomDateTimeOffset() =>
+            new DateTimeRange(earliestDate: new DateTime()).GetValue();
 
         private static string GetRandomString() =>
             new MnemonicString().GetValue();
@@ -59,9 +68,12 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Homes
         private static SqlException CreateSqlException() =>
             (SqlException)FormatterServices.GetUninitializedObject(typeof(SqlException));
 
-        private static Filler<Home> CreateHomeFiller()
+        private static Filler<Home> CreateHomeFiller(DateTimeOffset date)
         {
             var filler = new Filler<Home>();
+
+            filler.Setup()
+                .OnType<DateTimeOffset>().Use(date);
 
             return filler;
         }
