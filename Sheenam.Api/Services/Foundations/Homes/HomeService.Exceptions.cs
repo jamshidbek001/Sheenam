@@ -4,6 +4,7 @@
 //=================================
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using EFxceptions.Models.Exceptions;
 using Microsoft.Data.SqlClient;
@@ -17,6 +18,7 @@ namespace Sheenam.Api.Services.Foundations.Homes
     public partial class HomeService
     {
         private delegate ValueTask<Home> ReturningHomeFunction();
+        private delegate IQueryable<Home> ReturningHomeFunctions();
 
         private async ValueTask<Home> TryCatch(ReturningHomeFunction returningHomeFunction)
         {
@@ -56,6 +58,20 @@ namespace Sheenam.Api.Services.Foundations.Homes
                 var failedHomeServiceException = new FailedHomeServiceException(serviceException);
 
                 throw CreateAndLogServiceException(failedHomeServiceException);
+            }
+        }
+
+        private IQueryable<Home> TryCatch(ReturningHomeFunctions returningHomeFunctions)
+        {
+            try
+            {
+                return returningHomeFunctions();
+            }
+            catch (SqlException sqlException)
+            {
+                var failedStorageHomeException = new FailedHomeStorageException(sqlException);
+
+                throw CreateAndLogCriticalDependencyException(failedStorageHomeException);
             }
         }
 
