@@ -23,6 +23,9 @@ namespace Sheenam.Api.Services.Foundations.Homes
                 (Rule: IsInvalid(home.Type), Parameter: nameof(Home.Type)));
         }
 
+        private void ValidateHomeId(Guid homeId) =>
+            Validate((Rule: IsInvalid(homeId), Parameter: nameof(Home.Id)));
+
         private static dynamic IsInvalid(Guid id) => new
         {
             Condition = id == Guid.Empty,
