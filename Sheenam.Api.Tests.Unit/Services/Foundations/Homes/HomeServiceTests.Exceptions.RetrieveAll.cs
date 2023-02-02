@@ -48,5 +48,43 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Homes
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
         }
+
+        [Fact]
+        public void ShouldThrowServiceExceptionOnRetrieveAllWhenServiceErrorOccursAndLog()
+        {
+            // given
+            string exceptionMessage = GetRandomString();
+            var serviceException = new Exception(exceptionMessage);
+
+            var failedHomeServiceException =
+                new FailedHomeServiceException(serviceException);
+
+            var expectedHomeServiceException =
+                new HomeServiceException(failedHomeServiceException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectAllHomes()).Throws(serviceException);
+
+            // when
+            Action retrieveAllHomeAction = () =>
+                this.homeService.RetrieveAllHomes();
+
+            HomeServiceException actualHomeServiceException =
+                Assert.Throws<HomeServiceException>(retrieveAllHomeAction);
+
+            // then
+            actualHomeServiceException.Should().BeEquivalentTo(
+                expectedHomeServiceException);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectAllHomes(), Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(
+                    expectedHomeServiceException))), Times.Once);
+
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+        }
     }
 }
