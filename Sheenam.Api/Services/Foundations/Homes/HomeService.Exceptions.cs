@@ -73,6 +73,12 @@ namespace Sheenam.Api.Services.Foundations.Homes
 
                 throw CreateAndLogCriticalDependencyException(failedStorageHomeException);
             }
+            catch (Exception exception)
+            {
+                var faildHomeServiceException = new FailedHomeServiceException(exception);
+
+                throw CreateAndLogServiceException(faildHomeServiceException);
+            }
         }
 
         private HomeValidationException CreateAndLogValidationException(Xeption exception)
@@ -99,7 +105,15 @@ namespace Sheenam.Api.Services.Foundations.Homes
             return homeDependencyValidationException;
         }
 
-        private Exception CreateAndLogServiceException(Xeption exception)
+        private HomeDependencyException CreateAndLogDependencyException(Xeption exception)
+        {
+            var homeDependencyException = new HomeDependencyException(exception);
+            this.loggingBroker.LogError(homeDependencyException);
+
+            return homeDependencyException;
+        }
+
+        private HomeServiceException CreateAndLogServiceException(Exception exception)
         {
             var homeServiceException = new HomeServiceException(exception);
             this.loggingBroker.LogError(homeServiceException);

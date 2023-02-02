@@ -50,7 +50,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Homes
         }
 
         [Fact]
-        public void ShouldThrowServiceExceptionOnRetrieveAllWhenServiceErrorOccursAndLog()
+        public void ShouldThrowServiceExceptionOnRetrieveAllWhenServiceErrorOccursAndLogIt()
         {
             // given
             string exceptionMessage = GetRandomString();
