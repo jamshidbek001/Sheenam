@@ -23,6 +23,16 @@ namespace Sheenam.Api.Services.Foundations.Homes
                 (Rule: IsInvalid(home.Type), Parameter: nameof(Home.Type)));
         }
 
+        private void ValidateHomeOnModify(Home home)
+        {
+            ValidateHomeNotNull(home);
+
+            Validate(
+                (Rule: IsInvalid(home.Id), Parameter: nameof(Home.Id)),
+                (Rule: IsInvalid(home.HostId), Parameter: nameof(Home.HostId)),
+                (Rule: IsInvalid(home.Address), Parameter: nameof(Home.Address)));
+        }
+
         private void ValidateHomeId(Guid homeId) =>
             Validate((Rule: IsInvalid(homeId), Parameter: nameof(Home.Id)));
 

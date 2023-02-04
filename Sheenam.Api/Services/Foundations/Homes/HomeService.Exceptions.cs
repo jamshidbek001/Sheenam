@@ -57,6 +57,12 @@ namespace Sheenam.Api.Services.Foundations.Homes
 
                 throw CreateAndLogDependencyValidationException(lockedHomeException);
             }
+            catch (DbUpdateException dbUpdateException)
+            {
+                var failedHomeStorageException = new FailedHomeStorageException(dbUpdateException);
+
+                throw CreateAndLogDependencyException(failedHomeStorageException);
+            }
             catch (Exception serviceException)
             {
                 var failedHomeServiceException = new FailedHomeServiceException(serviceException);
