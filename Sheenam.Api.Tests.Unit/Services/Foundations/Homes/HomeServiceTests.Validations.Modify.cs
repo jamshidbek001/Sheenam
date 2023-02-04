@@ -91,7 +91,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Homes
                     expectedHomeValidationException))), Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.UpdateHomeAsync(It.IsAny<Home>()), Times.Once);
+                broker.UpdateHomeAsync(It.IsAny<Home>()), Times.Never);
 
             this.loggingBrokerMock.VerifyNoOtherCalls();
             this.storageBrokerMock.VerifyNoOtherCalls();
