@@ -4,6 +4,7 @@
 //=================================
 
 using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using EFxceptions.Models.Exceptions;
@@ -56,6 +57,12 @@ namespace Sheenam.Api.Services.Foundations.Homes
                 var lockedHomeException = new LockedHomeException(dbUpdateConcurrencyException);
 
                 throw CreateAndLogDependencyValidationException(lockedHomeException);
+            }
+            catch (DbUpdateException dbUpdateException)
+            {
+                var failedHomeStorageException = new FailedHomeStorageException(dbUpdateException);
+
+                throw CreateAndLogDependencyException(failedHomeStorageException);
             }
             catch (Exception serviceException)
             {
