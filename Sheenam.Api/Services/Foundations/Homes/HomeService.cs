@@ -48,7 +48,12 @@ namespace Sheenam.Api.Services.Foundations.Homes
             return maybeHome;
         });
 
-        public ValueTask<Home> ModifyHomeAsync(Home home) =>
-            throw new NotImplementedException();
+        public async ValueTask<Home> ModifyHomeAsync(Home home)
+        {
+            Home maybeHome =
+                await this.storageBroker.SelectHomeByIdAsync(home.Id);
+
+            return await this.storageBroker.UpdateHomeAsync(home);
+        }
     }
 }
