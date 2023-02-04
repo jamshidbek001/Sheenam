@@ -72,6 +72,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Homes
 
             this.storageBrokerMock.Setup(broker =>
                 broker.SelectHomeByIdAsync(nonExistHome.Id)).ReturnsAsync(nullHome);
+
             // when
             ValueTask<Home> modifyHomeTask =
                 this.homeService.ModifyHomeAsync(nonExistHome);
