@@ -167,7 +167,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Homes
                 broker.SelectHomeByIdAsync(homeId), Times.Once);
 
             this.loggingBrokerMock.Verify(broker =>
-                broker.LogCritical(It.Is(SameExceptionAs(
+                broker.LogError(It.Is(SameExceptionAs(
                     expectedHomeDependencyValidationException))), Times.Once);
 
             this.storageBrokerMock.VerifyNoOtherCalls();
