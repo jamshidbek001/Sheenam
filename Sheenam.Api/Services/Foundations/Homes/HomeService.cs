@@ -47,5 +47,8 @@ namespace Sheenam.Api.Services.Foundations.Homes
 
             return maybeHome;
         });
+
+        public ValueTask<Home> ModifyHomeAsync(Home home) =>
+            throw new NotImplementedException();
     }
 }
