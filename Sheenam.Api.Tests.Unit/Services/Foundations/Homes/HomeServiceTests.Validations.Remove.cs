@@ -48,5 +48,45 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Homes
             this.loggingBrokerMock.VerifyNoOtherCalls();
             this.storageBrokerMock.VerifyNoOtherCalls();
         }
+
+        [Fact]
+        public async Task ShouldThrowNotFoundExceptionOnRemoveIfHomeIsNotFoundAndLogItAsync()
+        {
+            // given
+            Guid randomHomeId = Guid.NewGuid();
+            Guid inputHomeId = randomHomeId;
+            Home noHome = null;
+            var notFoundException = new NotFoundHomeException(inputHomeId);
+
+            var expectedHomeValidationException =
+                new HomeValidationException(notFoundException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectHomeByIdAsync(It.IsAny<Guid>())).ReturnsAsync(noHome);
+
+            // when
+            ValueTask<Home> removeHomeTask =
+                this.homeService.RemoveHomeByIdAsync(inputHomeId);
+
+            HomeValidationException actualHomeValidationException =
+                await Assert.ThrowsAsync<HomeValidationException>(removeHomeTask.AsTask);
+
+            // then
+            actualHomeValidationException.Should().BeEquivalentTo(
+                expectedHomeValidationException);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectHomeByIdAsync(It.IsAny<Guid>()), Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(
+                    expectedHomeValidationException))), Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.DeleteHomeAsync(It.IsAny<Home>()), Times.Never);
+
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+        }
     }
 }
