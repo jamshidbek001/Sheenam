@@ -3,6 +3,7 @@
 // Free To Use To Find Comfort and Peace
 //=================================
 
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RESTFulSense.Controllers;
@@ -40,6 +41,25 @@ namespace Sheenam.Api.Controllers
             catch (HomeDependencyValidationException homeDependencyValidationException)
             {
                 return BadRequest(homeDependencyValidationException.InnerException);
+            }
+            catch (HomeDependencyException homeDependencyException)
+            {
+                return InternalServerError(homeDependencyException.InnerException);
+            }
+            catch (HomeServiceException homeServiceException)
+            {
+                return InternalServerError(homeServiceException.InnerException);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult<IQueryable<Home>> GetAllHomes()
+        {
+            try
+            {
+                IQueryable<Home> allHomes = this.homeService.RetrieveAllHomes();
+
+                return Ok(allHomes);
             }
             catch (HomeDependencyException homeDependencyException)
             {
