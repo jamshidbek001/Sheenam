@@ -11,7 +11,7 @@ namespace Sheenam.Api.Models.Foundations.Homes.Exceptions
     public class NotFoundHomeException : Xeption
     {
         public NotFoundHomeException(Guid homeId)
-            : base(message: $"Could nor find with id:{homeId}")
+            : base(message: $"Could not find with id:{homeId}")
         { }
     }
 }
