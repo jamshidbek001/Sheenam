@@ -69,6 +69,8 @@ namespace Sheenam.Api.Services.Foundations.Homes
             Home maybeHome =
                 await this.storageBroker.SelectHomeByIdAsync(homeId);
 
+            ValidateStorageHome(maybeHome, homeId);
+
             return await this.storageBroker.DeleteHomeAsync(maybeHome);
         });
     }
