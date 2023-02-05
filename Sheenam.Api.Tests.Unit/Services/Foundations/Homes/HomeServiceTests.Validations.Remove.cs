@@ -17,7 +17,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Homes
         public async Task ShouldThrowValidationExceptionOnRemoveHomeIfIdIsInvalidAndLogItAsync()
         {
             // given
-            Guid ivalidHomeId = Guid.NewGuid();
+            Guid ivalidHomeId = Guid.Empty;
             var invalidHomeException = new InvalidHomeException();
 
             invalidHomeException.AddData(
