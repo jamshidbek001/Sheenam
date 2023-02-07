@@ -11,7 +11,7 @@ using Sheenam.Api.Models.Foundations.HomeRequests;
 
 namespace Sheenam.Api.Services.Foundations.HomeRequests
 {
-    public class HomeRequestService : IHomeRequestService
+    public partial class HomeRequestService : IHomeRequestService
     {
         private readonly IStorageBroker storageBroker;
         private readonly IDateTimeBroker dateTimeBroker;
@@ -27,7 +27,11 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
             this.loggingBroker = loggingBroker;
         }
 
-        public async ValueTask<HomeRequest> AddHomeRequstAsync(HomeRequest homeRequest) =>
-            await this.storageBroker.InsertHomeRequestAsync(homeRequest);
+        public ValueTask<HomeRequest> AddHomeRequstAsync(HomeRequest homeRequest) =>
+        TryCatch(async () =>
+        {
+            ValidateHomeRequestNotNull(homeRequest);
+            return await this.storageBroker.InsertHomeRequestAsync(homeRequest);
+        });
     }
 }
