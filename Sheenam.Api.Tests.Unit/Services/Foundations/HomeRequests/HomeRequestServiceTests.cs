@@ -36,13 +36,13 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
             new DateTimeRange(earliestDate: DateTime.UnixEpoch).GetValue();
 
         private static HomeRequest CreateRandomHomeRequest() =>
-            CreateHomeRequestFiller(GetRandomDateTime()).Create();
-        private static HomeRequest CreateRandomHomeRequest(DateTimeOffset dates) =>
-            CreateHomeRequestFiller(dates).Create();
+            CreateHomeRequestFiller().Create();
 
-        private static Filler<HomeRequest> CreateHomeRequestFiller(DateTimeOffset dates)
+
+        private static Filler<HomeRequest> CreateHomeRequestFiller()
         {
             var filler = new Filler<HomeRequest>();
+            DateTimeOffset dates = GetRandomDateTime();
 
             filler.Setup()
                 .OnType<DateTimeOffset>().Use(dates);

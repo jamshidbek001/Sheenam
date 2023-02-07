@@ -3,6 +3,7 @@
 // Free To Use To Find Comfort and Peace
 //=================================
 
+using System;
 using System.Threading.Tasks;
 using Sheenam.Api.Brokers.DateTimes;
 using Sheenam.Api.Brokers.Loggings;
@@ -27,7 +28,7 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
             this.loggingBroker = loggingBroker;
         }
 
-        public ValueTask<HomeRequest> AddHomeRequstAsync(HomeRequest request) =>
-            throw new System.NotImplementedException();
+        public ValueTask<HomeRequest> AddHomeRequstAsync(HomeRequest homeRequest) =>
+            throw new NotImplementedException();
     }
 }

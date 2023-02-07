@@ -10,6 +10,6 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
 {
     public interface IHomeRequestService
     {
-        ValueTask<HomeRequest> AddHomeRequstAsync(HomeRequest request);
+        ValueTask<HomeRequest> AddHomeRequstAsync(HomeRequest homeRequest);
     }
 }
