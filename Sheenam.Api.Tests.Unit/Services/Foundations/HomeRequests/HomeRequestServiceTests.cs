@@ -42,6 +42,9 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
         private static HomeRequest CreateRandomHomeRequest() =>
             CreateHomeRequestFiller().Create();
 
+        private static string GetRandomString() =>
+            new MnemonicString().GetValue();
+
         private Expression<Func<Xeption, bool>> SameExceptionAs(Xeption expectedException) =>
             actualException => actualException.SameExceptionAs(expectedException);
 
