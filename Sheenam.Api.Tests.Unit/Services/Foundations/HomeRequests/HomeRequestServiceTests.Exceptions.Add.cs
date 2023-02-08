@@ -24,8 +24,11 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
             var failedHomeRequestStorageException =
                 new FailedHomeRequestStorageException(sqlException);
 
-            var expectedHomeRequesDependencyException =
+            var expectedHomeRequestDependencyException =
                 new HomeRequestDependencyException(failedHomeRequestStorageException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.InsertHomeRequestAsync(It.IsAny<HomeRequest>())).ThrowsAsync(sqlException);
 
             // when
             ValueTask<HomeRequest> addHomeRequestTask =
@@ -36,14 +39,14 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
 
             // then
             actualHomeRequestDependencyException.Should().BeEquivalentTo(
-                expectedHomeRequesDependencyException);
+                expectedHomeRequestDependencyException);
 
             this.storageBrokerMock.Verify(broker =>
                 broker.InsertHomeRequestAsync(It.IsAny<HomeRequest>()), Times.Once);
 
             this.loggingBrokerMock.Verify(broker =>
                 broker.LogCritical(It.Is(SameExceptionAs(
-                    expectedHomeRequesDependencyException))), Times.Once);
+                    expectedHomeRequestDependencyException))), Times.Once);
 
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();

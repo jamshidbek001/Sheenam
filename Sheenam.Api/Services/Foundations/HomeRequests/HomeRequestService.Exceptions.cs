@@ -4,6 +4,7 @@
 //=================================
 
 using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
 using Sheenam.Api.Models.Foundations.HomeRequests;
 using Sheenam.Api.Models.Foundations.HomeRequests.Exceptions;
 using Xeptions;
@@ -28,6 +29,12 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
             {
                 throw CreateAndLogValidationException(invalidHomeRequestException);
             }
+            catch (SqlException sqlException)
+            {
+                var failedHomeRequestStorageException = new FailedHomeRequestStorageException(sqlException);
+
+                throw CreateAndLogCriticalDependencyException(failedHomeRequestStorageException);
+            }
         }
 
         private HomeRequestValidationException CreateAndLogValidationException(Xeption exception)
@@ -36,6 +43,14 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
             this.loggingBroker.LogError(homeRequestValidationException);
 
             return homeRequestValidationException;
+        }
+
+        private HomeRequestDependencyException CreateAndLogCriticalDependencyException(Xeption exception)
+        {
+            var homeRequestDependencyException = new HomeRequestDependencyException(exception);
+            this.loggingBroker.LogCritical(homeRequestDependencyException);
+
+            return homeRequestDependencyException;
         }
     }
 }
