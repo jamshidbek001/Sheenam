@@ -3,10 +3,10 @@
 // Free To Use To Find Comfort and Peace
 //=================================
 
-using System.Data;
 using EFxceptions.Models.Exceptions;
 using FluentAssertions;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using Sheenam.Api.Models.Foundations.HomeRequests;
 using Sheenam.Api.Models.Foundations.HomeRequests.Exceptions;
@@ -98,14 +98,14 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
         {
             // given
             HomeRequest someHomeRequest = CreateRandomHomeRequest();
-            var dbUpdateConcurrencyException = new DBUConcurrencyException();
-            var lockedHomeRequestException = new LockedHomeRequestException(dbConcurrencyException);
+            var dbUpdateConcurrencyException = new DbUpdateConcurrencyException();
+            var lockedHomeRequestException = new LockedHomeRequestException(dbUpdateConcurrencyException);
 
             var expectedHomeRequestDependencyValidationException =
                 new HomeRequestDependencyValidationException(lockedHomeRequestException);
 
             this.storageBrokerMock.Setup(broker => broker.InsertHomeRequestAsync(
-                It.IsAny<HomeRequest>())).ThrowsAsync(dbConcurrencyException);
+                It.IsAny<HomeRequest>())).ThrowsAsync(dbUpdateConcurrencyException);
 
             // when
             ValueTask<HomeRequest> addHomeRequestTask =
