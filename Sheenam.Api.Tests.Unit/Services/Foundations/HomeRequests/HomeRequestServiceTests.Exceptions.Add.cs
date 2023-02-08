@@ -61,11 +61,11 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
             string someMessage = GetRandomString();
             var duplicateKeyException = new DuplicateKeyException(someMessage);
 
-            var failedHomeRequestDependencyValidationException =
-                new FailedHomeRequestDependencyValidationException(duplicateKeyException);
+            var alreadyExistHomeRequestException =
+                new AlreadyExistHomeRequestException(duplicateKeyException);
 
             var expectedHomeRequestDependencyValidationException =
-                new HomeRequestDependencyValidationException(failedHomeRequestDependencyValidationException);
+                new HomeRequestDependencyValidationException(alreadyExistHomeRequestException);
 
             this.storageBrokerMock.Setup(broker =>
                 broker.InsertHomeRequestAsync(It.IsAny<HomeRequest>())).ThrowsAsync(duplicateKeyException);
