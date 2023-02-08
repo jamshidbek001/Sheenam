@@ -43,7 +43,6 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
             Message = "Value is required"
         };
 
-
         private static void Validate(params (dynamic Rule, string Parameter)[] validations)
         {
             var invalidHomeRequestException = new InvalidHomeRequestException();
