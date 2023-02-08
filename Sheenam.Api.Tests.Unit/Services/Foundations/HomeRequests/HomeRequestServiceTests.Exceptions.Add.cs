@@ -98,7 +98,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
         {
             // given
             HomeRequest someHomeRequest = CreateRandomHomeRequest();
-            var dbConcurrencyException = new DBConcurrencyException();
+            var dbUpdateConcurrencyException = new DBUConcurrencyException();
             var lockedHomeRequestException = new LockedHomeRequestException(dbConcurrencyException);
 
             var expectedHomeRequestDependencyValidationException =
