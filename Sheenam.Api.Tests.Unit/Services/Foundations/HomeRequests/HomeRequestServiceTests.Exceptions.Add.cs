@@ -3,6 +3,7 @@
 // Free To Use To Find Comfort and Peace
 //=================================
 
+using System.Data;
 using EFxceptions.Models.Exceptions;
 using FluentAssertions;
 using Microsoft.Data.SqlClient;
@@ -70,6 +71,42 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
             this.storageBrokerMock.Setup(broker =>
                 broker.InsertHomeRequestAsync(It.IsAny<HomeRequest>())).ThrowsAsync(duplicateKeyException);
             ;
+            // when
+            ValueTask<HomeRequest> addHomeRequestTask =
+                this.homeRequestService.AddHomeRequstAsync(someHomeRequest);
+
+            HomeRequestDependencyValidationException actualHomeRequestDependencyValidationException =
+                await Assert.ThrowsAsync<HomeRequestDependencyValidationException>(addHomeRequestTask.AsTask);
+
+            // then
+            actualHomeRequestDependencyValidationException.Should().BeEquivalentTo(
+                expectedHomeRequestDependencyValidationException);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.InsertHomeRequestAsync(It.IsAny<HomeRequest>()), Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(
+                    expectedHomeRequestDependencyValidationException))), Times.Once);
+
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async Task ShouldThrowDependencyValidationExceptionOnAddIfDbConcurrencyErrorOccursAndLogItAsync()
+        {
+            // given
+            HomeRequest someHomeRequest = CreateRandomHomeRequest();
+            var dbConcurrencyException = new DBConcurrencyException();
+            var lockedHomeRequestException = new LockedHomeRequestException(dbConcurrencyException);
+
+            var expectedHomeRequestDependencyValidationException =
+                new HomeRequestDependencyValidationException(lockedHomeRequestException);
+
+            this.storageBrokerMock.Setup(broker => broker.InsertHomeRequestAsync(
+                It.IsAny<HomeRequest>())).ThrowsAsync(dbConcurrencyException);
+
             // when
             ValueTask<HomeRequest> addHomeRequestTask =
                 this.homeRequestService.AddHomeRequstAsync(someHomeRequest);
