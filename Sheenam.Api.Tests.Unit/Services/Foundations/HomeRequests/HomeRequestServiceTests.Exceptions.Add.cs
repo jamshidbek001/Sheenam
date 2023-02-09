@@ -142,6 +142,9 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
             var expectedHomeRequestServiceException =
                 new HomeRequestServiceException(failedHomeRequestServiceException);
 
+            this.storageBrokerMock.Setup(broker =>
+                broker.InsertHomeRequestAsync(It.IsAny<HomeRequest>())).ThrowsAsync(serviceException);
+
             // when
             ValueTask<HomeRequest> addHomeRequestTask =
                 this.homeRequestService.AddHomeRequstAsync(someHomeRequest);
@@ -158,7 +161,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
                     expectedHomeRequestServiceException))), Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.InsertHomeRequestAsync(It.IsAny<HomeRequest>()), Times.Once);
+                broker.InsertHomeRequestAsync(It.IsAny<HomeRequest>()), Times.Never);
 
             this.loggingBrokerMock.VerifyNoOtherCalls();
             this.storageBrokerMock.VerifyNoOtherCalls();
