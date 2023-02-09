@@ -128,5 +128,40 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
         }
+
+        [Fact]
+        public async Task ShouldThrowServiceExceptionOnAddIfServiceErrorOccursAndLogItAsync()
+        {
+            // given
+            HomeRequest someHomeRequest = CreateRandomHomeRequest();
+            var serviceException = new Exception();
+
+            var failedHomeRequestServiceException =
+                new FailedHomeRequestServiceException(serviceException);
+
+            var expectedHomeRequestServiceException =
+                new HomeRequestServiceException(failedHomeRequestServiceException);
+
+            // when
+            ValueTask<HomeRequest> addHomeRequestTask =
+                this.homeRequestService.AddHomeRequstAsync(someHomeRequest);
+
+            HomeRequestServiceException actualHomeRequestServiceException =
+                await Assert.ThrowsAsync<HomeRequestServiceException>(addHomeRequestTask.AsTask);
+
+            // then
+            actualHomeRequestServiceException.Should().BeEquivalentTo(
+                expectedHomeRequestServiceException);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(
+                    expectedHomeRequestServiceException))), Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.InsertHomeRequestAsync(It.IsAny<HomeRequest>()), Times.Once);
+
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+        }
     }
 }
