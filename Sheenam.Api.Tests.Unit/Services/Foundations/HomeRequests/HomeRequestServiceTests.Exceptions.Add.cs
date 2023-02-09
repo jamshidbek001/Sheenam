@@ -29,6 +29,9 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
             var expectedHomeRequestDependencyException =
                 new HomeRequestDependencyException(failedHomeRequestStorageException);
 
+            this.dateTimeBrokerMock.Setup(broker =>
+                broker.GetCurrentDateTime()).Throws(sqlException);
+
             this.storageBrokerMock.Setup(broker =>
                 broker.InsertHomeRequestAsync(It.IsAny<HomeRequest>())).ThrowsAsync(sqlException);
 
@@ -43,15 +46,19 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
             actualHomeRequestDependencyException.Should().BeEquivalentTo(
                 expectedHomeRequestDependencyException);
 
-            this.storageBrokerMock.Verify(broker =>
-                broker.InsertHomeRequestAsync(It.IsAny<HomeRequest>()), Times.Once);
+            this.dateTimeBrokerMock.Verify(broker =>
+                broker.GetCurrentDateTime(), Times.Once);
 
             this.loggingBrokerMock.Verify(broker =>
                 broker.LogCritical(It.Is(SameExceptionAs(
                     expectedHomeRequestDependencyException))), Times.Once);
 
-            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.Verify(broker =>
+                broker.InsertHomeRequestAsync(It.IsAny<HomeRequest>()), Times.Never);
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
         }
 
         [Fact]
@@ -68,9 +75,9 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
             var expectedHomeRequestDependencyValidationException =
                 new HomeRequestDependencyValidationException(alreadyExistHomeRequestException);
 
-            this.storageBrokerMock.Setup(broker =>
-                broker.InsertHomeRequestAsync(It.IsAny<HomeRequest>())).ThrowsAsync(duplicateKeyException);
-            ;
+            this.dateTimeBrokerMock.Setup(broker =>
+                broker.GetCurrentDateTime()).Throws(duplicateKeyException);
+
             // when
             ValueTask<HomeRequest> addHomeRequestTask =
                 this.homeRequestService.AddHomeRequstAsync(someHomeRequest);
@@ -82,15 +89,19 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
             actualHomeRequestDependencyValidationException.Should().BeEquivalentTo(
                 expectedHomeRequestDependencyValidationException);
 
-            this.storageBrokerMock.Verify(broker =>
-                broker.InsertHomeRequestAsync(It.IsAny<HomeRequest>()), Times.Once);
+            this.dateTimeBrokerMock.Verify(broker =>
+                broker.GetCurrentDateTime(), Times.Once);
 
             this.loggingBrokerMock.Verify(broker =>
                 broker.LogError(It.Is(SameExceptionAs(
                     expectedHomeRequestDependencyValidationException))), Times.Once);
 
-            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.Verify(broker =>
+                broker.InsertHomeRequestAsync(It.IsAny<HomeRequest>()), Times.Never);
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
         }
 
         [Fact]
@@ -107,6 +118,9 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
             this.storageBrokerMock.Setup(broker => broker.InsertHomeRequestAsync(
                 It.IsAny<HomeRequest>())).ThrowsAsync(dbUpdateConcurrencyException);
 
+            this.dateTimeBrokerMock.Setup(broker =>
+                broker.GetCurrentDateTime()).Throws(dbUpdateConcurrencyException);
+
             // when
             ValueTask<HomeRequest> addHomeRequestTask =
                 this.homeRequestService.AddHomeRequstAsync(someHomeRequest);
@@ -118,15 +132,19 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
             actualHomeRequestDependencyValidationException.Should().BeEquivalentTo(
                 expectedHomeRequestDependencyValidationException);
 
-            this.storageBrokerMock.Verify(broker =>
-                broker.InsertHomeRequestAsync(It.IsAny<HomeRequest>()), Times.Once);
+            this.dateTimeBrokerMock.Verify(broker =>
+                broker.GetCurrentDateTime(), Times.Once);
 
             this.loggingBrokerMock.Verify(broker =>
                 broker.LogError(It.Is(SameExceptionAs(
                     expectedHomeRequestDependencyValidationException))), Times.Once);
 
-            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.Verify(broker =>
+                broker.InsertHomeRequestAsync(It.IsAny<HomeRequest>()), Times.Never);
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
         }
 
         [Fact]
@@ -142,6 +160,9 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
             var expectedHomeRequestServiceException =
                 new HomeRequestServiceException(failedHomeRequestServiceException);
 
+            this.dateTimeBrokerMock.Setup(broker =>
+                broker.GetCurrentDateTime()).Throws(serviceException);
+
             this.storageBrokerMock.Setup(broker =>
                 broker.InsertHomeRequestAsync(It.IsAny<HomeRequest>())).ThrowsAsync(serviceException);
 
@@ -156,13 +177,17 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
             actualHomeRequestServiceException.Should().BeEquivalentTo(
                 expectedHomeRequestServiceException);
 
+            this.dateTimeBrokerMock.Verify(broker =>
+                broker.GetCurrentDateTime(), Times.Once);
+
             this.loggingBrokerMock.Verify(broker =>
                 broker.LogError(It.Is(SameExceptionAs(
                     expectedHomeRequestServiceException))), Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.InsertHomeRequestAsync(It.IsAny<HomeRequest>()), Times.Once);
+                broker.InsertHomeRequestAsync(It.IsAny<HomeRequest>()), Times.Never);
 
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
             this.storageBrokerMock.VerifyNoOtherCalls();
         }
