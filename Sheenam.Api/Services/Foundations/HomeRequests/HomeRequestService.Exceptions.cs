@@ -40,7 +40,7 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
             }
             catch (DuplicateKeyException duplicateKeyException)
             {
-                AlreadyExistHomeRequestException alreadyExistHomeRequestException =
+                var alreadyExistHomeRequestException =
                     new AlreadyExistHomeRequestException(duplicateKeyException);
 
                 throw CreateAndDependencyValidationException(alreadyExistHomeRequestException);
