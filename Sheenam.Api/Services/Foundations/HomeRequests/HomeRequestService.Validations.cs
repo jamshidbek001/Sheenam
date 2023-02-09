@@ -20,7 +20,10 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
                 (Rule: IsInvalid(homeRequest.GuestId), Parameter: nameof(HomeRequest.GuestId)),
                 (Rule: IsInvalid(homeRequest.HomeId), Parameter: nameof(HomeRequest.HomeId)),
                 (Rule: IsInvalid(homeRequest.CreatedDate), Parameter: nameof(HomeRequest.CreatedDate)),
-                (Rule: IsInvalid(homeRequest.UpdatedDate), Parameter: nameof(HomeRequest.UpdatedDate)));
+                (Rule: IsInvalid(homeRequest.UpdatedDate), Parameter: nameof(HomeRequest.UpdatedDate)),
+
+                (Rule: IsNotSame(homeRequest.CreatedDate, homeRequest.UpdatedDate, nameof(HomeRequest.UpdatedDate)),
+                    Parameter: nameof(HomeRequest.CreatedDate)));
         }
 
         private static void ValidateHomeRequestNotNull(HomeRequest homeRequest)
@@ -41,6 +44,15 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
         {
             Condition = date == default,
             Message = "Value is required"
+        };
+
+        private static dynamic IsNotSame(
+            DateTimeOffset firstDate,
+            DateTimeOffset secondDate,
+            string secondDateName) => new
+        {
+            Condition = firstDate != secondDate,
+            Message = $"Date is not same as {secondDateName}"
         };
 
         private static void Validate(params (dynamic Rule, string Parameter)[] validations)
