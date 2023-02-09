@@ -143,5 +143,53 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
             this.loggingBrokerMock.VerifyNoOtherCalls();
             this.storageBrokerMock.VerifyNoOtherCalls();
         }
+
+        [Theory]
+        [MemberData(nameof(InvalidSeconds))]
+        public async Task ShouldThrowValidationExceptionOnAddIfCreatedDateIsNotRecentAndLogItAsync(
+            int invalidSeconds)
+        {
+            // given
+            DateTimeOffset randomDateTime = GetRandomDateTime();
+            DateTimeOffset invalidRandomDateTime = randomDateTime.AddSeconds(invalidSeconds);
+            HomeRequest randomInvalidHomeRequest = CreateRandomHomeRequest(invalidRandomDateTime);
+            HomeRequest inalidHomeRequest = randomInvalidHomeRequest;
+            var invalidHomeRequestException = new InvalidHomeRequestException();
+
+            invalidHomeRequestException.AddData(
+                key: nameof(HomeRequest.CreatedDate),
+                values: "Date is not recent");
+
+            var expectedHomeRequestValidationException =
+                new HomeRequestValidationException(invalidHomeRequestException);
+
+            this.dateTimeBrokerMock.Setup(broker =>
+                broker.GetCurrentDateTime()).Returns(randomDateTime);
+
+            // when
+            ValueTask<HomeRequest> addHomeRequestTask =
+                this.homeRequestService.AddHomeRequstAsync(inalidHomeRequest);
+
+            HomeRequestValidationException actualHomeRequestValidationException =
+                await Assert.ThrowsAsync<HomeRequestValidationException>(addHomeRequestTask.AsTask);
+
+            // then
+            actualHomeRequestValidationException.Should().BeEquivalentTo(
+                expectedHomeRequestValidationException);
+
+            this.dateTimeBrokerMock.Verify(broker =>
+                broker.GetCurrentDateTime(), Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(
+                    expectedHomeRequestValidationException))), Times.Once);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.InsertHomeRequestAsync(It.IsAny<HomeRequest>()), Times.Never);
+
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+            this.storageBrokerMock.VerifyNoOtherCalls();
+        }
     }
 }

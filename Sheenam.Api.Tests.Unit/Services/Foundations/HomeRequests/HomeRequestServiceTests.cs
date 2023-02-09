@@ -14,6 +14,7 @@ using Sheenam.Api.Models.Foundations.HomeRequests;
 using Sheenam.Api.Services.Foundations.HomeRequests;
 using Tynamix.ObjectFiller;
 using Xeptions;
+using Xunit;
 
 namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
 {
@@ -36,11 +37,31 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
                 this.loggingBrokerMock.Object);
         }
 
+        public static TheoryData<int> InvalidSeconds()
+        {
+            int secondsInPast = -1 * new IntRange(
+                min: 60,
+                max: short.MaxValue).GetValue();
+
+            int secondsInFuture = new IntRange(
+                min: 0,
+                max: short.MaxValue).GetValue();
+
+            return new TheoryData<int>
+            {
+                secondsInPast,
+                secondsInFuture
+            };
+        }
+
         private static DateTimeOffset GetRandomDateTime() =>
             new DateTimeRange(earliestDate: DateTime.UnixEpoch).GetValue();
 
+        private static HomeRequest CreateRandomHomeRequest(DateTimeOffset dates) =>
+            CreateHomeRequestFiller(dates).Create();
+
         private static HomeRequest CreateRandomHomeRequest() =>
-            CreateHomeRequestFiller().Create();
+            CreateHomeRequestFiller(GetRandomDateTime()).Create();
 
         private static string GetRandomString() =>
             new MnemonicString().GetValue();
@@ -51,10 +72,9 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
         private static SqlException CreateSqlException() =>
             (SqlException)FormatterServices.GetUninitializedObject(typeof(SqlException));
 
-        private static Filler<HomeRequest> CreateHomeRequestFiller()
+        private static Filler<HomeRequest> CreateHomeRequestFiller(DateTimeOffset dates)
         {
             var filler = new Filler<HomeRequest>();
-            DateTimeOffset dates = GetRandomDateTime();
 
             filler.Setup()
                 .OnType<DateTimeOffset>().Use(dates);
