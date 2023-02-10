@@ -41,6 +41,14 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
         private void ValidateHomeRequestId(Guid homeRequestId) =>
             Validate((Rule: IsInvalid(homeRequestId), Parameter: nameof(HomeRequest.Id)));
 
+        private void ValidateStorageHomeRequest(HomeRequest maybeHomeRequest, Guid homeRequestId)
+        {
+            if (maybeHomeRequest is null)
+            {
+                throw new NotFoundHomeRequestException(homeRequestId);
+            }
+        }
+
         private static dynamic IsInvalid(Guid id) => new
         {
             Condition = id == default,
