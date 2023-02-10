@@ -3,6 +3,7 @@
 // Free To Use To Find Comfort and Peace
 //=================================
 
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Sheenam.Api.Brokers.DateTimes;
@@ -37,9 +38,19 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
         });
 
         public IQueryable<HomeRequest> RetrieveAllHomeRequests() =>
-        TryCatch(() =>
+        TryCatch(() => this.storageBroker.SelectAllHomeRequests());
+
+        public ValueTask<HomeRequest> RetrieveHomeRequestByIdAsync(Guid homeRequestId) =>
+        TryCatch(async () =>
         {
-            return storageBroker.SelectAllHomeRequests();
+            ValidateHomeRequestId(homeRequestId);
+
+            HomeRequest maybeHomeRequest =
+                await storageBroker.SelectHomeRequestByIdAsync(homeRequestId);
+
+            ValidateStorageHomeRequest(maybeHomeRequest, homeRequestId);
+
+            return maybeHomeRequest;
         });
     }
 }
