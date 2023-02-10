@@ -63,8 +63,21 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
         private static HomeRequest CreateRandomHomeRequest() =>
             CreateHomeRequestFiller(GetRandomDateTime()).Create();
 
+        private static IQueryable<HomeRequest> CreateRandomHomeRequests()
+        {
+            return CreateHomeRequestFiller(dates: GetRandomDateTime())
+                .Create(count: GetRandomNumber())
+                    .AsQueryable();
+        }
+
+        private static int GetRandomNumber() =>
+            new IntRange(min: 2, max: 99).GetValue();
+
         private static string GetRandomString() =>
             new MnemonicString().GetValue();
+
+        private static string GetRandomMessage() =>
+            new MnemonicString(wordCount: GetRandomNumber()).GetValue();
 
         private Expression<Func<Xeption, bool>> SameExceptionAs(Xeption expectedException) =>
             actualException => actualException.SameExceptionAs(expectedException);
