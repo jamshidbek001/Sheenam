@@ -43,7 +43,15 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
             return storageBroker.SelectAllHomeRequests();
         });
 
-        public async ValueTask<HomeRequest> RetrieveHomeRequestByIdAsync(Guid homeRequestId) =>
-            await storageBroker.SelectHomeRequestByIdAsync(homeRequestId);
+        public ValueTask<HomeRequest> RetrieveHomeRequestByIdAsync(Guid homeRequestId) =>
+        TryCatch(async () =>
+        {
+            ValidateHomeRequestId(homeRequestId);
+
+            HomeRequest maybeHomeRequest =
+                await storageBroker.SelectHomeRequestByIdAsync(homeRequestId);
+
+            return maybeHomeRequest;
+        });
     }
 }

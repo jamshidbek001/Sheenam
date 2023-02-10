@@ -38,6 +38,9 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
             }
         }
 
+        private void ValidateHomeRequestId(Guid homeRequestId) =>
+            Validate((Rule: IsInvalid(homeRequestId), Parameter: nameof(HomeRequest.Id)));
+
         private static dynamic IsInvalid(Guid id) => new
         {
             Condition = id == default,
