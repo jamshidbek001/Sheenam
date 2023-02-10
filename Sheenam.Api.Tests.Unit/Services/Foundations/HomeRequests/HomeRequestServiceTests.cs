@@ -76,6 +76,9 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
         private static string GetRandomString() =>
             new MnemonicString().GetValue();
 
+        private static string GetRandomMessage() =>
+            new MnemonicString(wordCount: GetRandomNumber()).GetValue();
+
         private Expression<Func<Xeption, bool>> SameExceptionAs(Xeption expectedException) =>
             actualException => actualException.SameExceptionAs(expectedException);
 
