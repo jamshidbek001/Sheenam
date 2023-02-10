@@ -37,6 +37,6 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
         });
 
         public IQueryable<HomeRequest> RetrieveAllHomeRequests() =>
-            throw new System.NotImplementedException();
+            this.storageBroker.SelectAllHomeRequests();
     }
 }
