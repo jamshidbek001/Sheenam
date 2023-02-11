@@ -28,7 +28,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
 
             this.storageBrokerMock.Setup(broker =>
                 broker.InsertHomeRequestAsync(inputHomeRequest))
-                .ReturnsAsync(storageHomeRequest);
+                    .ReturnsAsync(storageHomeRequest);
 
             // when
             HomeRequest actualHomeRequest =

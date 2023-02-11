@@ -32,9 +32,9 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
             this.loggingBrokerMock = new Mock<ILoggingBroker>();
 
             this.homeRequestService = new HomeRequestService(
-                this.storageBrokerMock.Object,
-                this.dateTimeBrokerMock.Object,
-                this.loggingBrokerMock.Object);
+                storageBroker: this.storageBrokerMock.Object,
+                dateTimeBroker: this.dateTimeBrokerMock.Object,
+                loggingBroker: this.loggingBrokerMock.Object);
         }
 
         public static TheoryData<int> InvalidSeconds()
@@ -61,13 +61,12 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
             CreateHomeRequestFiller(dates).Create();
 
         private static HomeRequest CreateRandomHomeRequest() =>
-            CreateHomeRequestFiller(GetRandomDateTime()).Create();
+            CreateHomeRequestFiller(DateTimeOffset.UtcNow).Create();
 
         private static IQueryable<HomeRequest> CreateRandomHomeRequests()
         {
             return CreateHomeRequestFiller(dates: GetRandomDateTime())
-                .Create(count: GetRandomNumber())
-                    .AsQueryable();
+                .Create(count: GetRandomNumber()).AsQueryable();
         }
 
         private static HomeRequest CreateRandomModifyHomeRequest(DateTimeOffset dates)
@@ -93,7 +92,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
         private static string GetRandomMessage() =>
             new MnemonicString(wordCount: GetRandomNumber()).GetValue();
 
-        private Expression<Func<Xeption, bool>> SameExceptionAs(Xeption expectedException) =>
+        private static Expression<Func<Xeption, bool>> SameExceptionAs(Xeption expectedException) =>
             actualException => actualException.SameExceptionAs(expectedException);
 
         private static SqlException CreateSqlException() =>

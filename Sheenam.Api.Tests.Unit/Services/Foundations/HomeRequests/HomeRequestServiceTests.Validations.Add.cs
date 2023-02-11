@@ -45,17 +45,15 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
             this.storageBrokerMock.VerifyNoOtherCalls();
         }
 
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        [InlineData(" ")]
-        public async Task ShouldThrowValidationExceptionOnAddIfHomeRequestIsInvalidAndLogItAsync(
-            string invalidString)
+        [Fact]
+        public async Task ShouldThrowValidationExceptionOnAddIfHomeRequestIsInvalidAndLogItAsync()
         {
             // given
+            Guid invalidGuid = Guid.Empty;
+
             var invalidHomeRequest = new HomeRequest
             {
-                Message = invalidString
+                Id = invalidGuid
             };
 
             var invalidHomeRequestException = new InvalidHomeRequestException();
@@ -73,16 +71,12 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
                 values: "Id is required");
 
             invalidHomeRequestException.AddData(
-                key: nameof(HomeRequest.Message),
-                values: "Text is required");
-
-            invalidHomeRequestException.AddData(
                 key: nameof(HomeRequest.CreatedDate),
-                values: "Value is required");
+                values: "Date is required");
 
             invalidHomeRequestException.AddData(
                 key: nameof(HomeRequest.UpdatedDate),
-                values: "Value is required");
+                values: "Date is required");
 
             var expectedHomeRequestValidationException =
                 new HomeRequestValidationException(invalidHomeRequestException);
@@ -98,12 +92,15 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
             actualHomeRequestValidationException.Should().BeEquivalentTo(
                 expectedHomeRequestValidationException);
 
+            this.dateTimeBrokerMock.Verify(broker =>
+                broker.GetCurrentDateTime(), Times.Once);
+
             this.loggingBrokerMock.Verify(broker =>
                 broker.LogError(It.Is(SameExceptionAs(
                     expectedHomeRequestValidationException))), Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.InsertHomeRequestAsync(It.IsAny<HomeRequest>()), Times.Never);
+                broker.InsertHomeRequestAsync(invalidHomeRequest), Times.Never);
 
             this.loggingBrokerMock.VerifyNoOtherCalls();
             this.storageBrokerMock.VerifyNoOtherCalls();
@@ -113,16 +110,16 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
         public async Task ShouldThrowValidationExceptionOnAddIfCreatedDateIsNotSameAsUpdatedDateAndLogItAsync()
         {
             // given
+            int randomNumber = GetRandomNumber();
             DateTimeOffset randomDateTime = GetRandomDateTime();
-            DateTimeOffset anotherRandomDate = GetRandomDateTime();
             HomeRequest randomHomeRequest = CreateRandomHomeRequest(randomDateTime);
             HomeRequest invalidHomeRequest = randomHomeRequest;
-            invalidHomeRequest.UpdatedDate = anotherRandomDate;
+            invalidHomeRequest.UpdatedDate = invalidHomeRequest.CreatedDate.AddDays(randomNumber);
             var invalidHomeRequestException = new InvalidHomeRequestException();
 
             invalidHomeRequestException.AddData(
-                key: nameof(HomeRequest.CreatedDate),
-                values: $"Date is not same as {nameof(HomeRequest.UpdatedDate)}");
+                key: nameof(HomeRequest.UpdatedDate),
+                values: $"Date is not the same as {nameof(HomeRequest.CreatedDate)}");
 
             var expectedHomeRequestValidationException =
                 new HomeRequestValidationException(invalidHomeRequestException);

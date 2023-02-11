@@ -33,9 +33,6 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
             this.dateTimeBrokerMock.Setup(broker =>
                 broker.GetCurrentDateTime()).Throws(sqlException);
 
-            this.storageBrokerMock.Setup(broker =>
-                broker.SelectHomeRequestByIdAsync(homeRequestId)).Throws(sqlException);
-
             // when
             ValueTask<HomeRequest> modifyHomeRequestTask =
                 this.homeRequestService.ModifyHomeRequestAsync(someHomeRequest);
@@ -55,7 +52,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
                     expectedHomeRequestDepependencyException))), Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectHomeRequestByIdAsync(someHomeRequest.Id), Times.Never);
+                broker.SelectHomeRequestByIdAsync(homeRequestId), Times.Never);
 
             this.storageBrokerMock.Verify(broker =>
                 broker.UpdateHomeRequestAsync(someHomeRequest), Times.Never);
