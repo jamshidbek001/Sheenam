@@ -18,9 +18,14 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
         public async Task ShouldThrowCriticalDependencyExceptionOnModifyIfSqlErrorOccursAndLogItAsync()
         {
             // given
-            HomeRequest someHomeRequest = CreateRandomHomeRequest();
+            DateTimeOffset someDateTime = GetRandomDateTime();
+            HomeRequest randomHomeRequest = CreateRandomHomeRequest(someDateTime);
+            HomeRequest someHomeRequest = randomHomeRequest;
+            Guid homeRequestId = someHomeRequest.Id;
             SqlException sqlException = CreateSqlException();
-            var faildedHomeRequestStorageException = new FailedHomeRequestStorageException(sqlException);
+
+            var faildedHomeRequestStorageException =
+                new FailedHomeRequestStorageException(sqlException);
 
             var expectedHomeRequestDepependencyException =
                 new HomeRequestDependencyException(faildedHomeRequestStorageException);
@@ -47,10 +52,10 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
                     expectedHomeRequestDepependencyException))), Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.UpdateHomeRequestAsync(It.IsAny<HomeRequest>()), Times.Never);
+                broker.SelectHomeRequestByIdAsync(someHomeRequest.Id), Times.Never);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectHomeRequestByIdAsync(someHomeRequest.Id), Times.Never);
+                broker.UpdateHomeRequestAsync(someHomeRequest), Times.Never);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
