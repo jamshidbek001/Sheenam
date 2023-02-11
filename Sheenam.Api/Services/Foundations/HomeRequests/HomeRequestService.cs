@@ -52,5 +52,8 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
 
             return maybeHomeRequest;
         });
+
+        public ValueTask<HomeRequest> ModifyHomeRequestAsync(HomeRequest homeRequest) =>
+            throw new NotImplementedException();
     }
 }
