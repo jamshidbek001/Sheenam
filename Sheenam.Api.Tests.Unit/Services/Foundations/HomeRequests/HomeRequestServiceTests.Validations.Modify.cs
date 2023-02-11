@@ -39,7 +39,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
                     expectedHomeRequestValidationException))), Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.UpdateHomeRequestAsync(It.IsAny<HomeRequest>()), Times.Once);
+                broker.UpdateHomeRequestAsync(It.IsAny<HomeRequest>()), Times.Never);
 
             this.loggingBrokerMock.VerifyNoOtherCalls();
             this.storageBrokerMock.VerifyNoOtherCalls();
