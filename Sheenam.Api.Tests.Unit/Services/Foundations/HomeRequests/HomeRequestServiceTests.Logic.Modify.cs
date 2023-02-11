@@ -21,13 +21,10 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
             HomeRequest randomHomeRequest = CreateRandomModifyHomeRequest(randomDate);
             HomeRequest inputHomeRequest = randomHomeRequest;
             HomeRequest storageHomeRequest = inputHomeRequest.DeepClone();
-            storageHomeRequest.UpdatedDate = randomHomeRequest.UpdatedDate;
+            storageHomeRequest.UpdatedDate = randomHomeRequest.CreatedDate;
             HomeRequest updatedHomeRequest = inputHomeRequest;
             HomeRequest expectedHomeRequest = updatedHomeRequest.DeepClone();
             Guid homeRequestId = inputHomeRequest.Id;
-
-            this.dateTimeBrokerMock.Setup(broker =>
-                broker.GetCurrentDateTime()).Returns(randomDate);
 
             this.storageBrokerMock.Setup(broker =>
                 broker.SelectHomeRequestByIdAsync(homeRequestId)).ReturnsAsync(storageHomeRequest);
@@ -39,12 +36,8 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
             HomeRequest actualHomeRequest =
                 await this.homeRequestService.ModifyHomeRequestAsync(inputHomeRequest);
 
-
             // then
             actualHomeRequest.Should().BeEquivalentTo(expectedHomeRequest);
-
-            this.dateTimeBrokerMock.Verify(broker =>
-                broker.GetCurrentDateTime(), Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
                 broker.SelectHomeRequestByIdAsync(homeRequestId), Times.Once);
@@ -52,7 +45,6 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
             this.storageBrokerMock.Verify(broker =>
                 broker.UpdateHomeRequestAsync(inputHomeRequest), Times.Once);
 
-            this.dateTimeBrokerMock.VerifyNoOtherCalls();
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
         }
