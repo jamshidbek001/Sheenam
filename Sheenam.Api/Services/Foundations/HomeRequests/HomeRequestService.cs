@@ -56,7 +56,7 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
         public ValueTask<HomeRequest> ModifyHomeRequestAsync(HomeRequest homeRequest) =>
         TryCatch(async () =>
         {
-            ValidateHomeRequestNotNull(homeRequest);
+            ValidateHomeRequestOnModify(homeRequest);
 
             HomeRequest maybeHomeRequest =
                 await this.storageBroker.SelectHomeRequestByIdAsync(homeRequest.Id);

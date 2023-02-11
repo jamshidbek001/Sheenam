@@ -43,6 +43,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
 
             this.loggingBrokerMock.VerifyNoOtherCalls();
             this.storageBrokerMock.VerifyNoOtherCalls();
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
         }
 
         [Theory]
@@ -93,6 +94,9 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
             // then
             actualHomeRequestValidationException.Should().BeEquivalentTo(
                 expectedHomeRequestValidationException);
+
+            this.dateTimeBrokerMock.Verify(broker =>
+                broker.GetCurrentDateTime(), Times.Never);
 
             this.loggingBrokerMock.Verify(broker =>
                 broker.LogError(It.Is(SameExceptionAs(

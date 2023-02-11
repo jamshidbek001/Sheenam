@@ -30,6 +30,26 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
                     Parameter: nameof(HomeRequest.CreatedDate)));
         }
 
+        private void ValidateHomeRequestOnModify(HomeRequest homeRequest)
+        {
+            ValidateHomeRequestNotNull(homeRequest);
+
+            Validate(
+                (Rule: IsInvalid(homeRequest.Id), Parameter: nameof(HomeRequest.Id)),
+                (Rule: IsInvalid(homeRequest.GuestId), Parameter: nameof(HomeRequest.GuestId)),
+                (Rule: IsInvalid(homeRequest.HomeId), Parameter: nameof(HomeRequest.HomeId)),
+                (Rule: IsInvalid(homeRequest.CreatedDate), Parameter: nameof(HomeRequest.CreatedDate)),
+                (Rule: IsInvalid(homeRequest.UpdatedDate), Parameter: nameof(HomeRequest.UpdatedDate)),
+                (Rule: IsNotRecent(homeRequest.CreatedDate), Parameter: nameof(HomeRequest.CreatedDate)),
+
+                (Rule: IsNotSame(
+                    firstDate: homeRequest.CreatedDate,
+                    secondDate: homeRequest.UpdatedDate,
+                    secondDateName: nameof(HomeRequest.UpdatedDate)),
+
+                    Parameter: nameof(HomeRequest.CreatedDate)));
+        }
+
         private static void ValidateHomeRequestNotNull(HomeRequest homeRequest)
         {
             if (homeRequest is null)
@@ -53,6 +73,12 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
         {
             Condition = id == default,
             Message = "Id is required"
+        };
+
+        private static dynamic IsInvalid(string text) => new
+        {
+            Condition = string.IsNullOrWhiteSpace(text),
+            Message = "Text is required"
         };
 
         private static dynamic IsInvalid(DateTimeOffset date) => new
