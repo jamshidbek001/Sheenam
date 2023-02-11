@@ -73,6 +73,10 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
                 values: "Id is required");
 
             invalidHomeRequestException.AddData(
+                key: nameof(HomeRequest.Message),
+                values: "Text is required");
+
+            invalidHomeRequestException.AddData(
                 key: nameof(HomeRequest.CreatedDate),
                 values: "Value is required");
 

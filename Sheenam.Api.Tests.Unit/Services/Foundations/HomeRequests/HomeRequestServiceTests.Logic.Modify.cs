@@ -26,6 +26,9 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
             HomeRequest expectedHomeRequest = updatedHomeRequest.DeepClone();
             Guid homeRequestId = inputHomeRequest.Id;
 
+            this.dateTimeBrokerMock.Setup(broker =>
+                broker.GetCurrentDateTime()).Returns(randomDate);
+
             this.storageBrokerMock.Setup(broker =>
                 broker.SelectHomeRequestByIdAsync(homeRequestId)).ReturnsAsync(storageHomeRequest);
 
@@ -38,6 +41,9 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
 
             // then
             actualHomeRequest.Should().BeEquivalentTo(expectedHomeRequest);
+
+            this.dateTimeBrokerMock.Verify(broker =>
+                broker.GetCurrentDateTime(), Times.Never);
 
             this.storageBrokerMock.Verify(broker =>
                 broker.SelectHomeRequestByIdAsync(homeRequestId), Times.Once);
