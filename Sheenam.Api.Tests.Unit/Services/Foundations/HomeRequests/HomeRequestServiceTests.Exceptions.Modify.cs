@@ -18,8 +18,8 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
         public async Task ShouldThrowCriticalDependencyExceptionOnModifyIfSqlErrorOccursAndLogItAsync()
         {
             // given
-            DateTimeOffset someDateTime = GetRandomDateTime();
-            HomeRequest randomHomeRequest = CreateRandomHomeRequest(someDateTime);
+            DateTimeOffset randomDateTime = GetRandomDateTime();
+            HomeRequest randomHomeRequest = CreateRandomModifyHomeRequest(randomDateTime);
             HomeRequest someHomeRequest = randomHomeRequest;
             Guid homeRequestId = someHomeRequest.Id;
             SqlException sqlException = CreateSqlException();
@@ -32,6 +32,9 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
 
             this.dateTimeBrokerMock.Setup(broker =>
                 broker.GetCurrentDateTime()).Throws(sqlException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectHomeRequestByIdAsync(homeRequestId)).Throws(sqlException);
 
             // when
             ValueTask<HomeRequest> modifyHomeRequestTask =
