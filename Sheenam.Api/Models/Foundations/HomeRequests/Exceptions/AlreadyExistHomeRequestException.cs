@@ -8,7 +8,7 @@ using Xeptions;
 
 namespace Sheenam.Api.Models.Foundations.HomeRequests.Exceptions
 {
-    public partial class AlreadyExistHomeRequestException : Xeption
+    public class AlreadyExistHomeRequestException : Xeption
     {
         public AlreadyExistHomeRequestException(Exception innerException)
             : base(message: "Home request already exists", innerException)

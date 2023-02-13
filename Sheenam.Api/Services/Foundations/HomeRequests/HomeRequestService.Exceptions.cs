@@ -74,10 +74,10 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
             }
             catch (SqlException sqlException)
             {
-                var failedHomeRequestServiceException =
-                    new FailedHomeRequestServiceException(sqlException);
+                var failedHomeRequestStorageException =
+                    new FailedHomeRequestStorageException(sqlException);
 
-                throw CreateAndLogCriticalDependencyException(failedHomeRequestServiceException);
+                throw CreateAndLogCriticalDependencyException(failedHomeRequestStorageException);
             }
             catch (Exception serviceException)
             {
@@ -114,7 +114,7 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
             return homeRequestDependencyValidationException;
         }
 
-        private Exception CreateAndLogServiceException(Xeption exception)
+        private HomeRequestServiceException CreateAndLogServiceException(Xeption exception)
         {
             var homeRequestServiceException =
                 new HomeRequestServiceException(exception);

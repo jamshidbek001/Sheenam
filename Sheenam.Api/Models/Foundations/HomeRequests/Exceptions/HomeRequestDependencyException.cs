@@ -7,7 +7,7 @@ using Xeptions;
 
 namespace Sheenam.Api.Models.Foundations.HomeRequests.Exceptions
 {
-    public partial class HomeRequestDependencyException : Xeption
+    public class HomeRequestDependencyException : Xeption
     {
         public HomeRequestDependencyException(Xeption innerException)
             : base(message: "Home request dependency error occurred,contact support",

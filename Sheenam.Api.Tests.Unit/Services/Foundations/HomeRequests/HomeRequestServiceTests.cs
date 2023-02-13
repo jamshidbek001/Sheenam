@@ -55,7 +55,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
         }
 
         private static DateTimeOffset GetRandomDateTime() =>
-            new DateTimeRange(earliestDate: DateTime.UnixEpoch).GetValue();
+            new DateTimeRange(earliestDate: new DateTime()).GetValue();
 
         private static HomeRequest CreateRandomHomeRequest(DateTimeOffset dates) =>
             CreateHomeRequestFiller(dates).Create();
@@ -81,7 +81,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
         }
 
         private static int GetRandomNumber() =>
-            new IntRange(min: 2, max: 99).GetValue();
+            new IntRange(min: 1, max: 10).GetValue();
 
         private static int GetRandomNegativeNumber() =>
            -1 * new IntRange(min: 2, max: 10).GetValue();

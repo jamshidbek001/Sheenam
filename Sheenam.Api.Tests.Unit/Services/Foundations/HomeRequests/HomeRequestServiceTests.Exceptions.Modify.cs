@@ -19,7 +19,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
         {
             // given
             DateTimeOffset randomDateTime = GetRandomDateTime();
-            HomeRequest randomHomeRequest = CreateRandomModifyHomeRequest(randomDateTime);
+            HomeRequest randomHomeRequest = CreateRandomHomeRequest(randomDateTime);
             HomeRequest someHomeRequest = randomHomeRequest;
             Guid homeRequestId = someHomeRequest.Id;
             SqlException sqlException = CreateSqlException();
@@ -52,7 +52,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
                     expectedHomeRequestDepependencyException))), Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectHomeRequestByIdAsync(homeRequestId), Times.Never);
+                broker.SelectHomeRequestByIdAsync(randomHomeRequest.Id), Times.Never);
 
             this.storageBrokerMock.Verify(broker =>
                 broker.UpdateHomeRequestAsync(someHomeRequest), Times.Never);

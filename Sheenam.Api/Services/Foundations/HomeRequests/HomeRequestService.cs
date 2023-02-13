@@ -58,7 +58,7 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
         {
             ValidateHomeRequestOnModify(homeRequest);
 
-            HomeRequest maybeHomeRequest =
+            var maybeHomeRequest =
                 await this.storageBroker.SelectHomeRequestByIdAsync(homeRequest.Id);
 
             return await this.storageBroker.UpdateHomeRequestAsync(homeRequest);
