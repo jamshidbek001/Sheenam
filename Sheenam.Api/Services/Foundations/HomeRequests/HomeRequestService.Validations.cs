@@ -30,7 +30,7 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
                     Parameter: nameof(HomeRequest.UpdatedDate)));
         }
 
-        private static void ValidateHomeRequestOnModify(HomeRequest homeRequest)
+        private void ValidateHomeRequestOnModify(HomeRequest homeRequest)
         {
             ValidateHomeRequestNotNull(homeRequest);
 
@@ -40,6 +40,7 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
                 (Rule: IsInvalid(homeRequest.HomeId), Parameter: nameof(HomeRequest.HomeId)),
                 (Rule: IsInvalid(homeRequest.CreatedDate), Parameter: nameof(HomeRequest.CreatedDate)),
                 (Rule: IsInvalid(homeRequest.UpdatedDate), Parameter: nameof(HomeRequest.UpdatedDate)),
+                (Rule: IsNotRecent(homeRequest.UpdatedDate), Parameter: nameof(HomeRequest.UpdatedDate)),
 
                 (Rule: IsSame(
                     firstDate: homeRequest.UpdatedDate,
@@ -90,8 +91,9 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
         {
             DateTimeOffset currentDateTime = this.dateTimeBroker.GetCurrentDateTime();
             TimeSpan timeDifference = currentDateTime.Subtract(date);
+            TimeSpan oneMinute = TimeSpan.FromMinutes(1);
 
-            return timeDifference.TotalSeconds is > 60 or < 0;
+            return timeDifference.Duration() > oneMinute;
         }
 
         private static dynamic IsNotSame(

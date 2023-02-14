@@ -97,7 +97,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
                 expectedHomeRequestValidationException);
 
             this.dateTimeBrokerMock.Verify(broker =>
-                broker.GetCurrentDateTime(), Times.Never);
+                broker.GetCurrentDateTime(), Times.Once);
 
             this.loggingBrokerMock.Verify(broker =>
                 broker.LogError(It.Is(SameExceptionAs(
@@ -142,7 +142,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
                 expectedHomeRequestValidationException);
 
             this.dateTimeBrokerMock.Verify(broker =>
-                broker.GetCurrentDateTime(), Times.Never);
+                broker.GetCurrentDateTime(), Times.Once);
 
             this.loggingBrokerMock.Verify(broker =>
                 broker.LogError(It.Is(SameExceptionAs(

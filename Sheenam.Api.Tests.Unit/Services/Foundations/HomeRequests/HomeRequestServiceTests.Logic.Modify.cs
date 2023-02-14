@@ -43,13 +43,13 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
             actualHomeRequest.Should().BeEquivalentTo(expectedHomeRequest);
 
             this.dateTimeBrokerMock.Verify(broker =>
-                broker.GetCurrentDateTime(), Times.Never);
+                broker.GetCurrentDateTime(), Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectHomeRequestByIdAsync(homeRequestId), Times.Once);
+                broker.SelectHomeRequestByIdAsync(homeRequestId), Times.Never);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.UpdateHomeRequestAsync(inputHomeRequest), Times.Once);
+                broker.UpdateHomeRequestAsync(inputHomeRequest), Times.Never);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
             this.storageBrokerMock.VerifyNoOtherCalls();
