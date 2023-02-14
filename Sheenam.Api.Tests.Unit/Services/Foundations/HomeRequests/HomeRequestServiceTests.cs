@@ -54,6 +54,18 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
             };
         }
 
+        public static TheoryData MinutesBeforeOrAfter()
+        {
+            int randomNumber = GetRandomNumber();
+            int randomNegativeNumber = GetRandomNegativeNumber();
+
+            return new TheoryData<int>
+            {
+                randomNumber,
+                randomNegativeNumber
+            };
+        }
+
         private static DateTimeOffset GetRandomDateTime() =>
             new DateTimeRange(earliestDate: new DateTime()).GetValue();
 
