@@ -59,14 +59,14 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
             Validate(
                 (Rule: IsNotSame(
                     firstDate: inputHomeRequest.CreatedDate,
-                    secondDate: inputHomeRequest.CreatedDate,
+                    secondDate: storageHomeRequest.CreatedDate,
                     secondDateName: nameof(inputHomeRequest.CreatedDate)),
 
                     Parameter: nameof(HomeRequest.CreatedDate)),
 
                 (Rule: IsSame(
                     firstDate: inputHomeRequest.UpdatedDate,
-                    secondDate: inputHomeRequest.UpdatedDate,
+                    secondDate: storageHomeRequest.UpdatedDate,
                     secondDateName: nameof(HomeRequest.UpdatedDate)),
 
                     Parameter: nameof(HomeRequest.UpdatedDate)));
