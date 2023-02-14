@@ -4,6 +4,7 @@
 //=================================
 
 using FluentAssertions;
+using Force.DeepCloner;
 using Moq;
 using Sheenam.Api.Models.Foundations.HomeRequests;
 using Sheenam.Api.Models.Foundations.HomeRequests.Exceptions;
@@ -239,6 +240,61 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
 
             this.storageBrokerMock.Verify(broker =>
                 broker.SelectHomeRequestByIdAsync(nonExistHomeRequest.Id), Times.Once);
+
+            this.dateTimeBrokerMock.Verify(broker =>
+                broker.GetCurrentDateTime(), Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(
+                    expectedHomeRequestValidationException))), Times.Once);
+
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async Task ShouldThrowValidationExceptionOnModifyIfStorageCreatedDateIsNotSameAsCreatedDateAndLogItAsync()
+        {
+            // given
+            int randomNumber = GetRandomNumber();
+            int randomMinutes = randomNumber;
+            DateTimeOffset randomDateTime = GetRandomDateTime();
+            HomeRequest randomHomeRequest = CreateRandomModifyHomeRequest(randomDateTime);
+            HomeRequest invalidHomeRequest = randomHomeRequest.DeepClone();
+            HomeRequest storageHomeRequest = randomHomeRequest.DeepClone();
+            storageHomeRequest.CreatedDate = storageHomeRequest.CreatedDate.AddMinutes(randomMinutes);
+            storageHomeRequest.UpdatedDate = storageHomeRequest.UpdatedDate.AddMinutes(randomMinutes);
+            Guid homeRequestId = invalidHomeRequest.Id;
+
+            var invalidHomeRequestException = new InvalidHomeRequestException();
+
+            invalidHomeRequestException.AddData(
+                key: nameof(HomeRequest.CreatedDate),
+                values: $"Date is not the same as {nameof(HomeRequest.CreatedDate)}");
+
+            var expectedHomeRequestValidationException =
+                new HomeRequestValidationException(invalidHomeRequestException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectHomeRequestByIdAsync(homeRequestId)).ReturnsAsync(storageHomeRequest);
+
+            this.dateTimeBrokerMock.Setup(broker =>
+                broker.GetCurrentDateTime()).Returns(randomDateTime);
+
+            // when
+            ValueTask<HomeRequest> modifyHomeRequestTask =
+                this.homeRequestService.ModifyHomeRequestAsync(invalidHomeRequest);
+
+            HomeRequestValidationException actualHomeRequestValidationException =
+                await Assert.ThrowsAsync<HomeRequestValidationException>(modifyHomeRequestTask.AsTask);
+
+            // then
+            actualHomeRequestValidationException.Should().BeEquivalentTo(
+                expectedHomeRequestValidationException);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectHomeRequestByIdAsync(homeRequestId), Times.Once);
 
             this.dateTimeBrokerMock.Verify(broker =>
                 broker.GetCurrentDateTime(), Times.Once);
