@@ -50,6 +50,28 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
                     Parameter: nameof(HomeRequest.UpdatedDate)));
         }
 
+        private static void ValidateAgainstStorageHomeRequestOnModify(
+            HomeRequest inputHomeRequest,
+            HomeRequest storageHomeRequest)
+        {
+            ValidateStorageHomeRequest(storageHomeRequest, inputHomeRequest.Id);
+
+            Validate(
+                (Rule: IsNotSame(
+                    firstDate: inputHomeRequest.CreatedDate,
+                    secondDate: inputHomeRequest.CreatedDate,
+                    secondDateName: nameof(inputHomeRequest.CreatedDate)),
+
+                    Parameter: nameof(HomeRequest.CreatedDate)),
+
+                (Rule: IsSame(
+                    firstDate: inputHomeRequest.UpdatedDate,
+                    secondDate: inputHomeRequest.UpdatedDate,
+                    secondDateName: nameof(HomeRequest.UpdatedDate)),
+
+                    Parameter: nameof(HomeRequest.UpdatedDate)));
+        }
+
         private static void ValidateHomeRequestNotNull(HomeRequest homeRequest)
         {
             if (homeRequest is null)
