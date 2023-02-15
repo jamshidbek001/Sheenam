@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using Moq;
 using Sheenam.Api.Models.Foundations.HomeRequests;
 using Sheenam.Api.Models.Foundations.HomeRequests.Exceptions;
-using Sheenam.Api.Models.Foundations.Homes.Exceptions;
 using Xunit;
 
 namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
@@ -152,13 +151,62 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
 
             this.storageBrokerMock.Verify(broker =>
                 broker.SelectHomeRequestByIdAsync(homeRequestId), Times.Once);
-            
+
             this.dateTimeBrokerMock.Verify(broker =>
                 broker.GetCurrentDateTime(), Times.Once);
 
             this.loggingBrokerMock.Verify(broker =>
                 broker.LogError(It.Is(SameExceptionAs(
                     expectedHomeRequestDependencyValidationException))), Times.Once);
+
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.dateTimeBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async Task ShouldThrowServiceExceptionOnModifyIfDatabaseErrorOccursAndLogItAsync()
+        {
+            // given
+            int minutesInPast = GetRandomNegativeNumber();
+            DateTimeOffset randomDateTime = GetRandomDateTime();
+            HomeRequest randomHomeRequest = CreateRandomHomeRequest(randomDateTime);
+            HomeRequest someHomeRequest = randomHomeRequest;
+            randomHomeRequest.CreatedDate = randomDateTime.AddMinutes(minutesInPast);
+            Guid homeRequestId = someHomeRequest.Id;
+            var serviceException = new Exception();
+
+            var failedHomeRequestServiceException =
+                new FailedHomeRequestServiceException(serviceException);
+
+            var expectedHomeRequestServiceException =
+                new HomeRequestServiceException(failedHomeRequestServiceException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.SelectHomeRequestByIdAsync(homeRequestId)).ThrowsAsync(serviceException);
+
+            this.dateTimeBrokerMock.Setup(broker =>
+                broker.GetCurrentDateTime()).Returns(randomDateTime);
+
+            // when
+            ValueTask<HomeRequest> modifyHomeRequestTask =
+                this.homeRequestService.ModifyHomeRequestAsync(someHomeRequest);
+
+            HomeRequestServiceException actualHomeRequestServiceException =
+                await Assert.ThrowsAsync<HomeRequestServiceException>(modifyHomeRequestTask.AsTask);
+
+            // then
+            actualHomeRequestServiceException.Should().BeEquivalentTo(expectedHomeRequestServiceException);
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.SelectHomeRequestByIdAsync(homeRequestId), Times.Once);
+
+            this.dateTimeBrokerMock.Verify(broker =>
+                broker.GetCurrentDateTime(), Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(
+                    expectedHomeRequestServiceException))), Times.Once);
 
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
