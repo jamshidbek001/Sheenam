@@ -62,7 +62,7 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
             {
                 var failedHomeRequestStorageException = new FailedHomeRequestStorageException(dbUpdateException);
 
-                throw CreateAndDependencyValidationException(failedHomeRequestStorageException);
+                throw CreateAndLogDependencyException(failedHomeRequestStorageException);
             }
             catch (Exception serviceException)
             {
@@ -118,6 +118,14 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
             this.loggingBroker.LogError(homeRequestDependencyValidationException);
 
             return homeRequestDependencyValidationException;
+        }
+
+        private HomeRequestDependencyException CreateAndLogDependencyException(Xeption exception)
+        {
+            var homeRequestDependencyException = new HomeRequestDependencyException(exception);
+            this.loggingBroker.LogError(homeRequestDependencyException);
+
+            return homeRequestDependencyException;
         }
 
         private HomeRequestServiceException CreateAndLogServiceException(Xeption exception)
