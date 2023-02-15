@@ -158,7 +158,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
         }
 
         [Theory]
-        [MemberData(nameof(MinutesBeforeOrAfter))]
+        [MemberData(nameof(InvalidSeconds))]
         public async Task ShouldThrowValidationExceptionOnModifyIfUpdatedDateIsNotRecentAndLogItAsync(int minutes)
         {
             // given
