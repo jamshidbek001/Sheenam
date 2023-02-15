@@ -59,20 +59,20 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
             // given
             DateTimeOffset randomDateTime = GetRandomDateTime();
             HomeRequest randomHomeRequest = CreateRandomHomeRequest(randomDateTime);
-            Guid inputId = randomHomeRequest.Id;
+            Guid inputHomeRequestId = randomHomeRequest.Id;
             HomeRequest nullHomeRequest = null;
 
-            var notFoundHomeRequestException = new NotFoundHomeRequestException(inputId);
+            var notFoundHomeRequestException = new NotFoundHomeRequestException(inputHomeRequestId);
 
             var expectedHomeRequestValidationException =
                 new HomeRequestValidationException(notFoundHomeRequestException);
 
             this.storageBrokerMock.Setup(broker =>
-                broker.SelectHomeRequestByIdAsync(inputId)).ReturnsAsync(nullHomeRequest);
+                broker.SelectHomeRequestByIdAsync(inputHomeRequestId)).ReturnsAsync(nullHomeRequest);
 
             // when
             ValueTask<HomeRequest> removeHomeRequestTask =
-                this.homeRequestService.RemoveHomeRequestByIdAsync(inputId);
+                this.homeRequestService.RemoveHomeRequestByIdAsync(inputHomeRequestId);
 
             HomeRequestValidationException actualHomeRequestValidationException =
                 await Assert.ThrowsAsync<HomeRequestValidationException>(removeHomeRequestTask.AsTask);
@@ -82,7 +82,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
                 expectedHomeRequestValidationException);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectHomeRequestByIdAsync(inputId), Times.Never);
+                broker.SelectHomeRequestByIdAsync(It.IsAny<Guid>()), Times.Once);
 
             this.loggingBrokerMock.Verify(broker =>
                 broker.LogError(It.Is(SameExceptionAs(
