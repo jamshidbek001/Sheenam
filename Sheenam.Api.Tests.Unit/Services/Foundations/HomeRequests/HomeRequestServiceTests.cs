@@ -32,9 +32,9 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
             this.loggingBrokerMock = new Mock<ILoggingBroker>();
 
             this.homeRequestService = new HomeRequestService(
-                this.storageBrokerMock.Object,
-                this.dateTimeBrokerMock.Object,
-                this.loggingBrokerMock.Object);
+                storageBroker: this.storageBrokerMock.Object,
+                dateTimeBroker: this.dateTimeBrokerMock.Object,
+                loggingBroker: this.loggingBrokerMock.Object);
         }
 
         public static TheoryData<int> InvalidSeconds()
@@ -54,24 +54,49 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
             };
         }
 
+        public static TheoryData MinutesBeforeOrAfter()
+        {
+            int randomNumber = GetRandomNumber();
+            int randomNegativeNumber = GetRandomNegativeNumber();
+
+            return new TheoryData<int>
+            {
+                randomNumber,
+                randomNegativeNumber
+            };
+        }
+
         private static DateTimeOffset GetRandomDateTime() =>
-            new DateTimeRange(earliestDate: DateTime.UnixEpoch).GetValue();
+            new DateTimeRange(earliestDate: new DateTime()).GetValue();
 
         private static HomeRequest CreateRandomHomeRequest(DateTimeOffset dates) =>
             CreateHomeRequestFiller(dates).Create();
 
         private static HomeRequest CreateRandomHomeRequest() =>
-            CreateHomeRequestFiller(GetRandomDateTime()).Create();
+            CreateHomeRequestFiller(DateTimeOffset.UtcNow).Create();
 
         private static IQueryable<HomeRequest> CreateRandomHomeRequests()
         {
             return CreateHomeRequestFiller(dates: GetRandomDateTime())
-                .Create(count: GetRandomNumber())
-                    .AsQueryable();
+                .Create(count: GetRandomNumber()).AsQueryable();
+        }
+
+        private static HomeRequest CreateRandomModifyHomeRequest(DateTimeOffset dates)
+        {
+            int randomDaysInPast = GetRandomNegativeNumber();
+            HomeRequest randomHomeRequest = CreateRandomHomeRequest(dates);
+
+            randomHomeRequest.CreatedDate =
+                randomHomeRequest.CreatedDate.AddDays(randomDaysInPast);
+
+            return randomHomeRequest;
         }
 
         private static int GetRandomNumber() =>
-            new IntRange(min: 2, max: 99).GetValue();
+            new IntRange(min: 1, max: 10).GetValue();
+
+        private static int GetRandomNegativeNumber() =>
+           -1 * new IntRange(min: 2, max: 10).GetValue();
 
         private static string GetRandomString() =>
             new MnemonicString().GetValue();
@@ -79,7 +104,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
         private static string GetRandomMessage() =>
             new MnemonicString(wordCount: GetRandomNumber()).GetValue();
 
-        private Expression<Func<Xeption, bool>> SameExceptionAs(Xeption expectedException) =>
+        private static Expression<Func<Xeption, bool>> SameExceptionAs(Xeption expectedException) =>
             actualException => actualException.SameExceptionAs(expectedException);
 
         private static SqlException CreateSqlException() =>

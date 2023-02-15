@@ -19,11 +19,11 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
             // given
             SqlException sqlException = CreateSqlException();
 
-            var failedHomeRequestServiceException =
-                new FailedHomeRequestServiceException(sqlException);
+            var failedHomeRequestStorageException =
+                new FailedHomeRequestStorageException(sqlException);
 
             var excpectedHomeRequestDependencyException =
-                new HomeRequestDependencyException(failedHomeRequestServiceException);
+                new HomeRequestDependencyException(failedHomeRequestStorageException);
 
             this.storageBrokerMock.Setup(broker =>
                 broker.SelectAllHomeRequests()).Throws(sqlException);

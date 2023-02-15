@@ -24,10 +24,52 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
                 (Rule: IsNotRecent(homeRequest.CreatedDate), Parameter: nameof(HomeRequest.CreatedDate)),
 
                 (Rule: IsNotSame(
-                    firstDate: homeRequest.CreatedDate,
-                    secondDate: homeRequest.UpdatedDate,
+                    firstDate: homeRequest.UpdatedDate,
+                    secondDate: homeRequest.CreatedDate,
+                    secondDateName: nameof(HomeRequest.CreatedDate)),
+                    Parameter: nameof(HomeRequest.UpdatedDate)));
+        }
+
+        private void ValidateHomeRequestOnModify(HomeRequest homeRequest)
+        {
+            ValidateHomeRequestNotNull(homeRequest);
+
+            Validate(
+                (Rule: IsInvalid(homeRequest.Id), Parameter: nameof(HomeRequest.Id)),
+                (Rule: IsInvalid(homeRequest.GuestId), Parameter: nameof(HomeRequest.GuestId)),
+                (Rule: IsInvalid(homeRequest.HomeId), Parameter: nameof(HomeRequest.HomeId)),
+                (Rule: IsInvalid(homeRequest.CreatedDate), Parameter: nameof(HomeRequest.CreatedDate)),
+                (Rule: IsInvalid(homeRequest.UpdatedDate), Parameter: nameof(HomeRequest.UpdatedDate)),
+                (Rule: IsNotRecent(homeRequest.UpdatedDate), Parameter: nameof(HomeRequest.UpdatedDate)),
+
+                (Rule: IsSame(
+                    firstDate: homeRequest.UpdatedDate,
+                    secondDate: homeRequest.CreatedDate,
+                    secondDateName: nameof(homeRequest.CreatedDate)),
+
+                    Parameter: nameof(HomeRequest.UpdatedDate)));
+        }
+
+        private static void ValidateAgainstStorageHomeRequestOnModify(
+            HomeRequest inputHomeRequest,
+            HomeRequest storageHomeRequest)
+        {
+            ValidateStorageHomeRequest(storageHomeRequest, inputHomeRequest.Id);
+
+            Validate(
+                (Rule: IsNotSame(
+                    firstDate: inputHomeRequest.CreatedDate,
+                    secondDate: storageHomeRequest.CreatedDate,
+                    secondDateName: nameof(inputHomeRequest.CreatedDate)),
+
+                    Parameter: nameof(HomeRequest.CreatedDate)),
+
+                (Rule: IsSame(
+                    firstDate: inputHomeRequest.UpdatedDate,
+                    secondDate: storageHomeRequest.UpdatedDate,
                     secondDateName: nameof(HomeRequest.UpdatedDate)),
-                    Parameter: nameof(HomeRequest.CreatedDate)));
+
+                    Parameter: nameof(HomeRequest.UpdatedDate)));
         }
 
         private static void ValidateHomeRequestNotNull(HomeRequest homeRequest)
@@ -38,10 +80,10 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
             }
         }
 
-        private void ValidateHomeRequestId(Guid homeRequestId) =>
+        private static void ValidateHomeRequestId(Guid homeRequestId) =>
             Validate((Rule: IsInvalid(homeRequestId), Parameter: nameof(HomeRequest.Id)));
 
-        private void ValidateStorageHomeRequest(HomeRequest maybeHomeRequest, Guid homeRequestId)
+        private static void ValidateStorageHomeRequest(HomeRequest maybeHomeRequest, Guid homeRequestId)
         {
             if (maybeHomeRequest is null)
             {
@@ -58,7 +100,7 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
         private static dynamic IsInvalid(DateTimeOffset date) => new
         {
             Condition = date == default,
-            Message = "Value is required"
+            Message = "Date is required"
         };
 
         private dynamic IsNotRecent(DateTimeOffset date) => new
@@ -71,8 +113,9 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
         {
             DateTimeOffset currentDateTime = this.dateTimeBroker.GetCurrentDateTime();
             TimeSpan timeDifference = currentDateTime.Subtract(date);
+            TimeSpan oneMinute = TimeSpan.FromMinutes(1);
 
-            return timeDifference.TotalSeconds is > 60 or < 0;
+            return timeDifference.Duration() > oneMinute;
         }
 
         private static dynamic IsNotSame(
@@ -81,7 +124,16 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
             string secondDateName) => new
             {
                 Condition = firstDate != secondDate,
-                Message = $"Date is not same as {secondDateName}"
+                Message = $"Date is not the same as {secondDateName}"
+            };
+
+        private static dynamic IsSame(
+            DateTimeOffset firstDate,
+            DateTimeOffset secondDate,
+            string secondDateName) => new
+            {
+                Condition = firstDate == secondDate,
+                Message = $"Date is the same as {secondDateName}"
             };
 
         private static void Validate(params (dynamic Rule, string Parameter)[] validations)

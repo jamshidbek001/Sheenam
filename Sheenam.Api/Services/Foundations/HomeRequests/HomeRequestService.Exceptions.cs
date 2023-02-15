@@ -58,6 +58,12 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
 
                 throw CreateAndDependencyValidationException(lockedHomeRequestException);
             }
+            catch (DbUpdateException dbUpdateException)
+            {
+                var failedHomeRequestStorageException = new FailedHomeRequestStorageException(dbUpdateException);
+
+                throw CreateAndLogDependencyException(failedHomeRequestStorageException);
+            }
             catch (Exception serviceException)
             {
                 var failedHomeRequestServiceException = new FailedHomeRequestServiceException(serviceException);
@@ -74,10 +80,10 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
             }
             catch (SqlException sqlException)
             {
-                var failedHomeRequestServiceException =
-                    new FailedHomeRequestServiceException(sqlException);
+                var failedHomeRequestStorageException =
+                    new FailedHomeRequestStorageException(sqlException);
 
-                throw CreateAndLogCriticalDependencyException(failedHomeRequestServiceException);
+                throw CreateAndLogCriticalDependencyException(failedHomeRequestStorageException);
             }
             catch (Exception serviceException)
             {
@@ -114,7 +120,15 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
             return homeRequestDependencyValidationException;
         }
 
-        private Exception CreateAndLogServiceException(Xeption exception)
+        private HomeRequestDependencyException CreateAndLogDependencyException(Xeption exception)
+        {
+            var homeRequestDependencyException = new HomeRequestDependencyException(exception);
+            this.loggingBroker.LogError(homeRequestDependencyException);
+
+            return homeRequestDependencyException;
+        }
+
+        private HomeRequestServiceException CreateAndLogServiceException(Xeption exception)
         {
             var homeRequestServiceException =
                 new HomeRequestServiceException(exception);
