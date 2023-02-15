@@ -46,10 +46,10 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.HomeRequests
                 broker.GetCurrentDateTime(), Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectHomeRequestByIdAsync(homeRequestId), Times.Never);
+                broker.SelectHomeRequestByIdAsync(homeRequestId), Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
-                broker.UpdateHomeRequestAsync(inputHomeRequest), Times.Never);
+                broker.UpdateHomeRequestAsync(inputHomeRequest), Times.Once);
 
             this.dateTimeBrokerMock.VerifyNoOtherCalls();
             this.storageBrokerMock.VerifyNoOtherCalls();

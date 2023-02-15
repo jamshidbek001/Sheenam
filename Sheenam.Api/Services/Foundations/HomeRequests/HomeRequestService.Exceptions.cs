@@ -58,6 +58,12 @@ namespace Sheenam.Api.Services.Foundations.HomeRequests
 
                 throw CreateAndDependencyValidationException(lockedHomeRequestException);
             }
+            catch (DbUpdateException dbUpdateException)
+            {
+                var failedHomeRequestStorageException = new FailedHomeRequestStorageException(dbUpdateException);
+
+                throw CreateAndDependencyValidationException(failedHomeRequestStorageException);
+            }
             catch (Exception serviceException)
             {
                 var failedHomeRequestServiceException = new FailedHomeRequestServiceException(serviceException);
