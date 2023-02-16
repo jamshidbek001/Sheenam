@@ -102,5 +102,39 @@ namespace Sheenam.Api.Controllers
                 return InternalServerError(homeRequestServiceException.InnerException);
             }
         }
+
+        [HttpPut]
+        public async ValueTask<ActionResult<HomeRequest>> PutHomeRequestAsync(HomeRequest homeRequest)
+        {
+            try
+            {
+                HomeRequest modifiedHomeRequest =
+                    await this.homeRequestService.ModifyHomeRequestAsync(homeRequest);
+
+                return Ok(modifiedHomeRequest);
+            }
+            catch (HomeRequestValidationException homeRequestValidationException)
+                when (homeRequestValidationException.InnerException is NotFoundHomeRequestException)
+            {
+                return NotFound(homeRequestValidationException.InnerException);
+            }
+            catch (HomeRequestValidationException homeRequestValidationException)
+            {
+                return BadRequest(homeRequestValidationException.InnerException);
+            }
+            catch (HomeRequestDependencyValidationException homeRequestDependencyValidationException)
+                when (homeRequestDependencyValidationException.InnerException is AlreadyExistHomeRequestException)
+            {
+                return Conflict(homeRequestDependencyValidationException.InnerException);
+            }
+            catch (HomeRequestDependencyException homeRequesDependencyException)
+            {
+                return InternalServerError(homeRequesDependencyException.InnerException);
+            }
+            catch (HomeRequestServiceException homeRequestServiceException)
+            {
+                return InternalServerError(homeRequestServiceException.InnerException);
+            }
+        }
     }
 }
