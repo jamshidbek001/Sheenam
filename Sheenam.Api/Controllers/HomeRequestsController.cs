@@ -3,6 +3,7 @@
 // Free To Use To Find Comfort and Peace
 //=================================
 
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RESTFulSense.Controllers;
@@ -26,7 +27,8 @@ namespace Sheenam.Api.Controllers
         {
             try
             {
-                HomeRequest postedHomeRequest = await this.homeRequestService.AddHomeRequstAsync(homeRequest);
+                HomeRequest postedHomeRequest =
+                    await this.homeRequestService.AddHomeRequstAsync(homeRequest);
 
                 return Created(postedHomeRequest);
             }
@@ -46,6 +48,26 @@ namespace Sheenam.Api.Controllers
             catch (HomeRequestDependencyException homeRequestDependencyException)
             {
                 return InternalServerError(homeRequestDependencyException.InnerException);
+            }
+            catch (HomeRequestServiceException homeRequestServiceException)
+            {
+                return InternalServerError(homeRequestServiceException.InnerException);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult<IQueryable<HomeRequest>> GetAllHomeRequests()
+        {
+            try
+            {
+                IQueryable<HomeRequest> allHomeRequests =
+                    this.homeRequestService.RetrieveAllHomeRequests();
+
+                return Ok(allHomeRequests);
+            }
+            catch (HomeRequestDependencyException homeRequestDependenyException)
+            {
+                return InternalServerError(homeRequestDependenyException.InnerException);
             }
             catch (HomeRequestServiceException homeRequestServiceException)
             {
