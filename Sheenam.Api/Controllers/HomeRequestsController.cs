@@ -3,6 +3,7 @@
 // Free To Use To Find Comfort and Peace
 //=================================
 
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -68,6 +69,33 @@ namespace Sheenam.Api.Controllers
             catch (HomeRequestDependencyException homeRequestDependenyException)
             {
                 return InternalServerError(homeRequestDependenyException.InnerException);
+            }
+            catch (HomeRequestServiceException homeRequestServiceException)
+            {
+                return InternalServerError(homeRequestServiceException.InnerException);
+            }
+        }
+
+        [HttpGet("{homeRequestId}")]
+        public async ValueTask<ActionResult<HomeRequest>> GetHomeRequestByIdAsync(Guid homeRequestId)
+        {
+            try
+            {
+                return await this.homeRequestService.RetrieveHomeRequestByIdAsync(homeRequestId);
+            }
+            catch (HomeRequestDependencyException homeRequestDependencyException)
+            {
+                return InternalServerError(homeRequestDependencyException.InnerException);
+            }
+            catch (HomeRequestValidationException homeRequestValidationException)
+                when (homeRequestValidationException.InnerException is InvalidHomeRequestException)
+            {
+                return BadRequest(homeRequestValidationException.InnerException);
+            }
+            catch (HomeRequestValidationException homeRequestValidationException)
+                when (homeRequestValidationException.InnerException is NotFoundHomeRequestException)
+            {
+                return NotFound(homeRequestValidationException.InnerException);
             }
             catch (HomeRequestServiceException homeRequestServiceException)
             {
